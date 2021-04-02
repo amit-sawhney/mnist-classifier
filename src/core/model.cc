@@ -5,6 +5,24 @@ namespace naivebayes {
 
 Model::Model() = default;
 
+Model::Model(const Model *source) {}
+
+Model::Model(Model &&source) noexcept {}
+
+Model &Model::operator=(const Model &source) {}
+
+Model &Model::operator=(Model &&source) noexcept {}
+
+Model::~Model() {
+  delete prediction_matrix_;
+  for (TrainingImage *image : training_images_) {
+    delete image;
+  }
+
+  prediction_matrix_ = nullptr;
+  training_images_.clear();
+}
+
 std::string Model::GetBestClass() const { return "CS 126"; }
 
 void Model::Train() {

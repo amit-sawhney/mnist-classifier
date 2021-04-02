@@ -10,6 +10,16 @@ class Model {
 public:
   Model();
 
+  ~Model();
+
+  Model(const Model *source);
+
+  Model(Model &&source) noexcept;
+
+  Model &operator=(const Model &source);
+
+  Model &operator=(Model &&source) noexcept;
+
   std::string GetBestClass() const;
 
   void Train();
