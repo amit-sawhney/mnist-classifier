@@ -8,7 +8,8 @@ class PredictionMatrix {
 public:
   PredictionMatrix();
 
-  std::vector<std::vector<std::map<size_t, float>>> GetPredictionMatrix() const;
+  std::vector<std::vector<std::vector<std::vector<float>>>>
+  GetPredictionMatrix() const;
 
 private:
   std::vector<std::vector<std::vector<std::vector<float>>>> probability_matrix_;

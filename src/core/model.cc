@@ -11,8 +11,6 @@ void Model::Train() {
   if (training_images_.empty()) {
     throw std::exception("No training images to train the model on");
   }
-
-
 }
 
 void Model::Predict() {}
@@ -32,16 +30,17 @@ std::istream &operator>>(std::istream &input, Model &model) {
 
       // Only create a new image if the data has been collected for it
       if (!ascii_image.empty()) {
-        TrainingImage *image = new TrainingImage(ascii_image, current_label);
+        TrainingImage image(ascii_image, current_label);
+        TrainingImage *image_ptr = &image;
         ascii_image.clear();
-        model.training_images_.push_back(image);
+        model.training_images_.push_back(image_ptr);
       }
 
       current_label = std::stoi(current_line);
       continue;
     }
 
-    ascii_image.push_back(current_line);
+    //    ascii_image.push_back(current_line);
   }
 
   return input;

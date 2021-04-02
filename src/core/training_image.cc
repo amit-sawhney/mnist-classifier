@@ -1,7 +1,7 @@
 #include "core/training_image.h"
 
 namespace naivebayes {
-TrainingImage::TrainingImage() : image_label_(0), image_size_(0) {}
+TrainingImage::TrainingImage() = default;
 
 TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
                              size_t image_label)
@@ -26,7 +26,7 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
 
     pixels_.push_back(pixel_row);
   }
-};
+}
 
 Pixel TrainingImage::GetPixelStatusAt(size_t x, size_t y) {
   return pixels_.at(x).at(y);
