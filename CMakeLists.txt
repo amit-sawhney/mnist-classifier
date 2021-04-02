@@ -54,7 +54,8 @@ list(APPEND CORE_SOURCE_FILES src/core/model.cc)
 list(APPEND SOURCE_FILES ${CORE_SOURCE_FILES}
         src/visualizer/naive_bayes_app.cc
         src/visualizer/sketchpad.cc
-        src/core/training_image.cc)
+        src/core/training_image.cc
+        src/core/prediction_matrix.cc)
 
 list(APPEND TEST_FILES tests/rename_this_test_file.cc)
 
