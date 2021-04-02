@@ -9,9 +9,9 @@ Model::Model(const Model *source) {}
 
 Model::Model(Model &&source) noexcept {}
 
-Model &Model::operator=(const Model &source) {}
+Model &Model::operator=(const Model &source) { return *this; }
 
-Model &Model::operator=(Model &&source) noexcept {}
+Model &Model::operator=(Model &&source) noexcept { return *this; }
 
 Model::~Model() {
   delete prediction_matrix_;
@@ -58,7 +58,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
       continue;
     }
 
-    //    ascii_image.push_back(current_line);
+    ascii_image.push_back(current_line);
   }
 
   return input;
