@@ -8,20 +8,22 @@ namespace naivebayes {
 class TrainingImage {
 
 public:
-
   TrainingImage();
 
-  TrainingImage(size_t image_size, size_t image_label);
+  TrainingImage(const std::vector<std::string> &raw_ascii_image,
+                size_t image_label);
 
-  Pixel* GetPixelStatusAt(size_t x, size_t y);
+  Pixel GetPixelStatusAt(size_t x, size_t y);
 
-  void GetSize() const;
+  size_t GetSize() const;
 
-  void GetLabel() const;
+  size_t GetLabel() const;
+
 private:
-  static size_t num_labels_;
+  const char kShadedChar = '#';
+  const char kPartiallyShadedChar = '+';
   size_t image_size_;
   size_t image_label_;
-  std::vector<std::vector<Pixel*>> pixels_;
+  std::vector<std::vector<Pixel>> pixels_;
 };
 } // namespace naivebayes
