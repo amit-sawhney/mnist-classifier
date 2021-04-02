@@ -1,4 +1,5 @@
 #include <core/model.h>
+#include "iostream"
 
 namespace naivebayes {
 
@@ -14,8 +15,16 @@ void Model::Load() {}
 
 void Model::Save() {}
 
-Model &Model::operator>>(const Model &rhs) {
-  return *this;
+std::istream& operator>>(std::istream &in, Model& model) {
+  std::string current_line;
+
+  while(std::getline(in, current_line)) {
+    if (current_line.length() == 1) {
+      std::cout << current_line << std::endl;
+    }
+  }
+
+  return in;
 }
 
 } // namespace naivebayes
