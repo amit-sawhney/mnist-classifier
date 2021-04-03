@@ -32,8 +32,6 @@ Model::~Model() {
   label_training_image_map_.clear();
 }
 
-std::string Model::GetBestClass() const { return "CS 126"; }
-
 void Model::Train() {
   if (label_training_image_map_.empty()) {
     throw std::exception("No training images to train the model on");
@@ -44,8 +42,9 @@ void Model::Train() {
       label_training_image_map_.begin()->second.at(0)->GetSize();
 
   prediction_matrix_ = new PredictionMatrix(
-      label_training_image_map_, image_size, size_t(Pixel::kNumShades),
-      label_training_image_map_.size());
+      image_size, size_t(Pixel::kNumShades), label_training_image_map_.size());
+
+  prediction_matrix_->CalculateProbabilities(label_training_image_map_);
 }
 
 void Model::Predict() {}
@@ -69,7 +68,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
 
       // Only create a new image if the data has been collected for it
       if (!ascii_image.empty()) {
-        TrainingImage* image = new TrainingImage(ascii_image, current_label);
+        TrainingImage *image = new TrainingImage(ascii_image, current_label);
         ascii_image.clear();
         model.label_training_image_map_[current_label].push_back(image);
       }

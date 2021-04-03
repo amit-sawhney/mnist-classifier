@@ -20,8 +20,6 @@ public:
 
   Model &operator=(Model &&source) noexcept;
 
-  std::string GetBestClass() const;
-
   void Train();
 
   void Predict();

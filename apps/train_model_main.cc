@@ -11,8 +11,6 @@ int main() {
 
   naivebayes::Model model;
 
-  std::cout << "Welcome to " << model.GetBestClass() << std::endl;
-
   std::ifstream training_image_stream("../data/trainingimagesandlabels.txt");
 
   training_image_stream >> model;
