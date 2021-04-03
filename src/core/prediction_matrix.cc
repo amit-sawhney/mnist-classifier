@@ -4,8 +4,8 @@ namespace naivebayes {
 PredictionMatrix::PredictionMatrix() = default;
 
 PredictionMatrix::PredictionMatrix(
-    const std::vector<TrainingImage *> &training_images, size_t image_size,
-    size_t num_shades, size_t num_labels) {
+    const std::map<size_t, std::vector<TrainingImage *>> &image_map,
+    size_t image_size, size_t num_shades, size_t num_labels) {
 
   std::vector<float> labels(num_labels, 0.0f);
 
@@ -16,8 +16,6 @@ PredictionMatrix::PredictionMatrix(
   std::vector<std::vector<std::vector<std::vector<float>>>> matrix(image_size,
                                                                    y_matrix);
   probability_matrix_ = matrix;
-
-  BuildMatrix(training_images);
 }
 
 std::vector<std::vector<std::vector<std::vector<float>>>>
@@ -27,9 +25,5 @@ PredictionMatrix::GetPredictionMatrix() const {
   return vector;
 }
 void PredictionMatrix::BuildMatrix(
-    const std::vector<TrainingImage *> &training_images) {
-
-
-
-}
+    const std::vector<TrainingImage *> &training_images) {}
 } // namespace naivebayes

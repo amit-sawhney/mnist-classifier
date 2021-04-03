@@ -35,10 +35,9 @@ public:
 private:
   const size_t kNumClasses = 10;
 
-  void UpdateTrainingLabelMap(size_t label);
+  void UpdateTrainingImageMap(size_t label);
 
-  std::vector<TrainingImage *> training_images_;
-  std::map<size_t, size_t> training_label_count_map_;
+  std::map<size_t, std::vector<TrainingImage *>> label_training_image_map_;
   PredictionMatrix *prediction_matrix_;
 };
 

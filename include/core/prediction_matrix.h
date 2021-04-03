@@ -10,8 +10,9 @@ class PredictionMatrix {
 public:
   PredictionMatrix();
 
-  PredictionMatrix(const std::vector<TrainingImage *> &training_images,
-                   size_t image_size, size_t num_shades, size_t num_labels);
+  PredictionMatrix(
+      const std::map<size_t, std::vector<TrainingImage *>> &image_map,
+      size_t image_size, size_t num_shades, size_t num_labels);
 
   std::vector<std::vector<std::vector<std::vector<float>>>>
   GetPredictionMatrix() const;
