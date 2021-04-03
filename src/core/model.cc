@@ -40,7 +40,8 @@ void Model::Train() {
   }
 
   // Access the first training image's size
-  size_t image_size = label_training_image_map_.begin()->second.size();
+  size_t image_size =
+      label_training_image_map_.begin()->second.at(0)->GetSize();
 
   prediction_matrix_ = new PredictionMatrix(
       label_training_image_map_, image_size, size_t(Pixel::kNumShades),
@@ -68,10 +69,9 @@ std::istream &operator>>(std::istream &input, Model &model) {
 
       // Only create a new image if the data has been collected for it
       if (!ascii_image.empty()) {
-        TrainingImage image(ascii_image, current_label);
-        TrainingImage *image_ptr = &image;
+        TrainingImage* image = new TrainingImage(ascii_image, current_label);
         ascii_image.clear();
-        model.label_training_image_map_[current_label].push_back(image_ptr);
+        model.label_training_image_map_[current_label].push_back(image);
       }
 
       continue;

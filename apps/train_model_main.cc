@@ -17,7 +17,7 @@ int main() {
 
   training_image_stream >> model;
 
-//  model.Train();
+  model.Train();
 
   return 0;
 }
