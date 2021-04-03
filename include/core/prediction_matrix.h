@@ -15,10 +15,10 @@ public:
   void CalculateProbabilities(
       const std::map<size_t, std::vector<TrainingImage *>> &image_map);
 
+  void ClearValues();
+
 private:
   const float kLaplaceSmoothingFactor = 1.0f;
-
-  void BuildMatrix(const std::vector<TrainingImage *> &training_images);
 
   size_t CalculateNumImagesOfLabelWithPixel(
       size_t i, size_t j, Pixel pixel,

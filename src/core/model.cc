@@ -5,32 +5,44 @@ namespace naivebayes {
 
 Model::Model() = default;
 
-Model::Model(const Model *source) {}
+Model::Model(const Model &source) { *this = source; }
 
-Model::Model(Model &&source) noexcept {}
+Model::Model(Model &&source) noexcept { *this = std::move(source); }
 
-Model &Model::operator=(const Model &source) { return *this; }
+Model &Model::operator=(const Model &source) {
+  ClearModel();
 
-Model &Model::operator=(Model &&source) noexcept { return *this; }
+  label_training_image_map_ = std::map<size_t, std::vector<TrainingImage *>>();
+  prediction_matrix_ = nullptr;
 
-Model::~Model() {
-  delete prediction_matrix_;
-
-  for (const auto &itr : label_training_image_map_) {
+  for (const auto &itr : source.label_training_image_map_) {
     std::vector<TrainingImage *> images = itr.second;
 
     for (TrainingImage *image : images) {
-      delete image;
-    }
 
-    images.clear();
+      TrainingImage *new_image = new TrainingImage(*image);
+      label_training_image_map_[new_image->GetLabel()].push_back(new_image);
+    }
   }
 
-  label_training_image_map_.clear();
+  prediction_matrix_ = source.prediction_matrix_;
 
-  prediction_matrix_ = nullptr;
-  label_training_image_map_.clear();
+  return *this;
 }
+
+Model &Model::operator=(Model &&source) noexcept {
+  ClearModel();
+
+  label_training_image_map_ = std::move(source.label_training_image_map_);
+  prediction_matrix_ = source.prediction_matrix_;
+
+  source.label_training_image_map_.clear();
+  source.prediction_matrix_->ClearValues();
+
+  return *this;
+}
+
+Model::~Model() { ClearModel(); }
 
 void Model::Train() {
   if (label_training_image_map_.empty()) {
@@ -91,6 +103,22 @@ void Model::UpdateTrainingImageMap(size_t label) {
     label_training_image_map_[label] = std::vector<TrainingImage *>{};
     return;
   }
+}
+
+void Model::ClearModel() {
+  delete prediction_matrix_;
+
+  for (const auto &itr : label_training_image_map_) {
+    std::vector<TrainingImage *> images = itr.second;
+
+    for (TrainingImage *image : images) {
+      delete image;
+    }
+
+    images.clear();
+  }
+
+  label_training_image_map_.clear();
 }
 
 } // namespace naivebayes

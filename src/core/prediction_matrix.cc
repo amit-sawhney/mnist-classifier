@@ -75,8 +75,7 @@ Pixel PredictionMatrix::ParseSizeTToPixel(size_t pixel_num) {
   }
 }
 
-void PredictionMatrix::BuildMatrix(
-    const std::vector<TrainingImage *> &training_images) {}
+void PredictionMatrix::ClearValues() { probabilities_.clear(); }
 
 std::vector<std::vector<std::vector<std::vector<float>>>>
 PredictionMatrix::StructureMatrix(size_t image_size, size_t num_shades,

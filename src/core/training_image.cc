@@ -3,6 +3,46 @@
 namespace naivebayes {
 TrainingImage::TrainingImage() = default;
 
+TrainingImage::TrainingImage(const TrainingImage &source) {
+  image_size_ = source.image_size_;
+  image_label_ = source.image_label_;
+  pixels_ = source.pixels_;
+}
+
+TrainingImage::TrainingImage(TrainingImage &&source) noexcept {
+  *this = std::move(source);
+}
+
+TrainingImage &TrainingImage::operator=(const TrainingImage &source) {
+  *this = TrainingImage(source);
+
+  return *this;
+}
+
+TrainingImage &TrainingImage::operator=(TrainingImage &&source) noexcept {
+  *this = source;
+
+  source.image_size_ = 0;
+  source.image_label_ = 0;
+  source.pixels_.clear();
+
+  return *this;
+}
+
+TrainingImage::~TrainingImage() {
+  image_size_ = 0;
+  image_label_ = 0;
+  pixels_.clear();
+}
+
+TrainingImage::TrainingImage(size_t image_size, size_t image_label,
+                             std::vector<std::vector<Pixel>> pixels) {
+
+  image_size_ = image_size;
+  image_label_ = image_label;
+  pixels_ = pixels;
+}
+
 TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
                              size_t image_label)
     : image_label_(image_label) {
@@ -25,7 +65,6 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
     }
 
     pixels_.push_back(pixel_row);
-
   }
 }
 
@@ -36,4 +75,8 @@ Pixel TrainingImage::GetPixelStatusAt(size_t x, size_t y) {
 size_t TrainingImage::GetLabel() const { return image_label_; }
 
 size_t TrainingImage::GetSize() const { return image_size_; }
+
+std::vector<std::vector<Pixel>> TrainingImage::GetPixels() const {
+  return pixels_;
+}
 } // namespace naivebayes

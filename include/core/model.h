@@ -12,7 +12,7 @@ public:
 
   ~Model();
 
-  Model(const Model *source);
+  Model(const Model &source);
 
   Model(Model &&source) noexcept;
 
@@ -31,9 +31,9 @@ public:
   friend std::istream &operator>>(std::istream &input, Model &model);
 
 private:
-  const size_t kNumClasses = 10;
-
   void UpdateTrainingImageMap(size_t label);
+
+  void ClearModel();
 
   std::map<size_t, std::vector<TrainingImage *>> label_training_image_map_;
   PredictionMatrix *prediction_matrix_;
