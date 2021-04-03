@@ -25,6 +25,7 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
     }
 
     pixels_.push_back(pixel_row);
+
   }
 }
 

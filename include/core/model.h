@@ -33,9 +33,12 @@ public:
   friend std::istream &operator>>(std::istream &input, Model &model);
 
 private:
-  const float kLaplaceSmoothingFactor = 1.0f;
   const size_t kNumClasses = 10;
+
+  void UpdateTrainingLabelMap(size_t label);
+
   std::vector<TrainingImage *> training_images_;
+  std::map<size_t, size_t> training_label_count_map_;
   PredictionMatrix *prediction_matrix_;
 };
 
