@@ -14,34 +14,35 @@ std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
   std::string current_line;
 
   std::getline(input, current_line);
-  size_t image_size = size_t(std::stoi(current_line));
+  size_t image_size = std::stoi(current_line);
 
   std::getline(input, current_line);
-  size_t num_shades = size_t(std::stoi(current_line));
+  size_t num_shades = std::stoi(current_line);
 
   std::getline(input, current_line);
-  size_t num_labels = size_t(std::stoi(current_line));
+  size_t num_labels = std::stoi(current_line);
 
   matrix.probabilities_ =
       matrix.StructureMatrix(image_size, num_shades, num_labels);
 
   // Traverse each row of an image
-  for (size_t i = 0; i < matrix.probabilities_.size(); ++i) {
+  for (size_t row = 0; row < matrix.probabilities_.size(); ++row) {
 
     // Traverse each column of an image
-    for (size_t j = 0; j < matrix.probabilities_[i].size(); ++j) {
+    for (size_t col = 0; col < matrix.probabilities_[row].size(); ++col) {
 
       // Traverse each shade of an pixel
-      for (size_t pixel = 0; pixel < matrix.probabilities_[i][j].size();
+      for (size_t pixel = 0; pixel < matrix.probabilities_[row][col].size();
            ++pixel) {
 
         // Traverse each type of image
         for (size_t label = 0;
-             label < matrix.probabilities_[i][j][pixel].size(); ++label) {
+             label < matrix.probabilities_[row][col][pixel].size(); ++label) {
 
           std::getline(input, current_line);
 
-          matrix.probabilities_[i][j][pixel][label] = std::stof(current_line);
+          matrix.probabilities_[row][col][pixel][label] =
+              std::stof(current_line);
         }
       }
     }
@@ -55,19 +56,16 @@ std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
   std::vector<std::vector<std::vector<std::vector<float>>>> probabilities =
       matrix.probabilities_;
 
-  // Traverse each row of an image
-  for (size_t i = 0; i < probabilities.size(); ++i) {
+  for (size_t row = 0; row < probabilities.size(); ++row) {
 
-    // Traverse each column of an image
-    for (size_t j = 0; j < probabilities[i].size(); ++j) {
+    for (size_t col = 0; col < probabilities[row].size(); ++col) {
 
-      // Traverse each shade of an pixel
-      for (size_t pixel = 0; pixel < probabilities[i][j].size(); ++pixel) {
+      for (size_t pixel = 0; pixel < probabilities[row][col].size(); ++pixel) {
 
-        // Traverse each type of image
-        for (size_t label = 0; label < probabilities[i][j][pixel].size();
+        for (size_t label = 0; label < probabilities[row][col][pixel].size();
              ++label) {
-          output << probabilities[i][j][pixel][label] << std::endl;
+
+          output << probabilities[row][col][pixel][label] << std::endl;
         }
       }
     }
@@ -79,19 +77,14 @@ std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
 void PredictionMatrix::CalculateProbabilities(
     const std::map<size_t, std::vector<TrainingImage *>> &image_map) {
 
-  std::map<size_t, size_t> test;
-
   // Traverse each row of an image
-  for (size_t i = 0; i < probabilities_.size(); ++i) {
+  for (size_t row = 0; row < probabilities_.size(); ++row) {
 
-    // Traverse each column of an image
-    for (size_t j = 0; j < probabilities_[i].size(); ++j) {
+    for (size_t col = 0; col < probabilities_[row].size(); ++col) {
 
-      // Traverse each shade of an pixel
-      for (size_t pixel = 0; pixel < probabilities_[i][j].size(); ++pixel) {
+      for (size_t pixel = 0; pixel < probabilities_[row][col].size(); ++pixel) {
 
-        // Traverse each type of image
-        for (size_t label = 0; label < probabilities_[i][j][pixel].size();
+        for (size_t label = 0; label < probabilities_[row][col][pixel].size();
              ++label) {
 
           const std::vector<TrainingImage *> &label_images =
@@ -100,14 +93,14 @@ void PredictionMatrix::CalculateProbabilities(
 
           size_t num_labels = image_map.size();
           size_t num_images = CalculateNumImagesOfLabelWithPixel(
-              i, j, current_pixel, label_images);
+              row, col, current_pixel, label_images);
           size_t total_images = label_images.size();
 
           float probability =
               float(kLaplaceSmoothingFactor + num_images) /
               float(num_labels * kLaplaceSmoothingFactor + total_images);
 
-          probabilities_[i][j][pixel][label] = probability;
+          probabilities_[row][col][pixel][label] = probability;
         }
       }
     }
