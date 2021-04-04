@@ -1,7 +1,7 @@
 #include "core/training_image.h"
 
 namespace naivebayes {
-TrainingImage::TrainingImage() = default;
+TrainingImage::TrainingImage() : image_label_(INT_MAX), image_size_(0) {}
 
 TrainingImage::TrainingImage(const TrainingImage &source) {
   image_size_ = source.image_size_;
@@ -36,7 +36,7 @@ TrainingImage::~TrainingImage() {
 }
 
 TrainingImage::TrainingImage(size_t image_size, size_t image_label,
-                             std::vector<std::vector<Pixel>> pixels) {
+                             const std::vector<std::vector<Pixel>> &pixels) {
 
   image_size_ = image_size;
   image_label_ = image_label;
@@ -53,11 +53,11 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
   for (const std::string &image_line : raw_ascii_image) {
     std::vector<Pixel> pixel_row;
 
-    for (char pixel_string : image_line) {
+    for (char pixel_char : image_line) {
 
-      if (pixel_string == kShadedChar) {
+      if (pixel_char == kShadedChar) {
         pixel_row.push_back(Pixel::kShaded);
-      } else if (pixel_string == kPartiallyShadedChar) {
+      } else if (pixel_char == kPartiallyShadedChar) {
         pixel_row.push_back(Pixel::kPartiallyShaded);
       } else {
         pixel_row.push_back(Pixel::kUnshaded);

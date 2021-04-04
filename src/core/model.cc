@@ -4,7 +4,10 @@
 
 namespace naivebayes {
 
-Model::Model() = default;
+Model::Model() {
+  prediction_matrix_ = nullptr;
+  label_training_image_map_ = std::map<size_t, std::vector<TrainingImage *>>();
+}
 
 Model::Model(const Model &source) { *this = source; }
 
@@ -78,15 +81,18 @@ void Model::Save(const std::string &save_file_path,
   // Access the first training image's size
   size_t image_size =
       label_training_image_map_.begin()->second.at(0)->GetSize();
-
   size_t num_shades = size_t(Pixel::kNumShades);
+  size_t num_labels = label_training_image_map_.size();
 
   std::ofstream os(full_path);
+
+  // Save basic model information at top of file
   os << image_size << std::endl;
-  os << size_t(Pixel::kNumShades) << std::endl;
-  os << label_training_image_map_.size() << std::endl;
+  os << num_shades << std::endl;
+  os << num_labels << std::endl;
 
   os << *prediction_matrix_;
+
   os.close();
 }
 
@@ -105,6 +111,8 @@ std::istream &operator>>(std::istream &input, Model &model) {
 
       // Only create a new image if the data has been collected for it
       if (!ascii_image.empty()) {
+
+        // File has read an entire image and is at a new label so add image
         TrainingImage *image = new TrainingImage(ascii_image, current_label);
         ascii_image.clear();
         model.label_training_image_map_[current_label].push_back(image);
@@ -124,6 +132,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
 }
 
 void Model::UpdateTrainingImageMap(size_t label) {
+  // Checks if map doesn't contain the label
   if (!label_training_image_map_.count(label)) {
     label_training_image_map_[label] = std::vector<TrainingImage *>{};
     return;
