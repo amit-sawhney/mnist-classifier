@@ -59,6 +59,9 @@ public:
    */
   void ClearValues();
 
+  std::vector<std::vector<std::vector<std::vector<float>>>>
+  GetPredictionMatrix() const;
+
 private:
   const float kLaplaceSmoothingFactor = 1.0f;
 

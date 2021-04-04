@@ -1,12 +1,19 @@
 #include "core/prediction_matrix.h"
 
 namespace naivebayes {
-PredictionMatrix::PredictionMatrix() = default;
+PredictionMatrix::PredictionMatrix() {
+  probabilities_ = StructureMatrix(0, 0, 0);
+};
 
 PredictionMatrix::PredictionMatrix(size_t image_size, size_t num_shades,
                                    size_t num_labels) {
 
   probabilities_ = StructureMatrix(image_size, num_shades, num_labels);
+}
+
+std::vector<std::vector<std::vector<std::vector<float>>>>
+PredictionMatrix::GetPredictionMatrix() const {
+  return probabilities_;
 }
 
 std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {

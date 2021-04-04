@@ -88,6 +88,8 @@ public:
    */
   friend std::istream &operator>>(std::istream &input, Model &model);
 
+  PredictionMatrix *GetPredictionMatrix() const;
+
 private:
   /**
    * Updates the labels of the training map by instantiating the map with the

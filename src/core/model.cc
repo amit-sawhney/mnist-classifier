@@ -49,6 +49,10 @@ Model &Model::operator=(Model &&source) noexcept {
 
 Model::~Model() { ClearModel(); }
 
+PredictionMatrix *Model::GetPredictionMatrix() const {
+  return prediction_matrix_;
+}
+
 void Model::Train() {
   if (label_training_image_map_.empty()) {
     throw std::exception("No training images to train the model on");
