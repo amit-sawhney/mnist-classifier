@@ -54,6 +54,8 @@ void Model::Train() {
     throw std::exception("No training images to train the model on");
   }
 
+  std::cout << "Training Model................" << std::endl;
+
   // Access the first training image's size
   size_t image_size =
       label_training_image_map_.begin()->second.at(0)->GetSize();
@@ -62,6 +64,8 @@ void Model::Train() {
       image_size, size_t(Pixel::kNumShades), label_training_image_map_.size());
 
   prediction_matrix_->CalculateProbabilities(label_training_image_map_);
+
+  std::cout << "Finished Training................" << std::endl;
 }
 
 void Model::Predict() {
@@ -69,12 +73,18 @@ void Model::Predict() {
 }
 
 void Model::Load(const std::string &model_file_path) {
+  std::cout << "Loading Model........" << std::endl;
+
   std::ifstream saved_stream(model_file_path);
   saved_stream >> *prediction_matrix_;
+
+  std::cout << "Finished Loading........." << std::endl;
 }
 
 void Model::Save(const std::string &save_file_path,
                  const std::string &file_name) {
+
+  std::cout << "Saving the model........" << std::endl;
 
   std::string full_path = save_file_path + file_name;
 
@@ -94,6 +104,8 @@ void Model::Save(const std::string &save_file_path,
   os << *prediction_matrix_;
 
   os.close();
+
+  std::cout << "Finished Saving........." << std::endl;
 }
 
 std::istream &operator>>(std::istream &input, Model &model) {

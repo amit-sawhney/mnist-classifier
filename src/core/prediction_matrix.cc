@@ -13,6 +13,7 @@ std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
 
   std::string current_line;
 
+  // Collect the model information at the top of the file
   std::getline(input, current_line);
   size_t image_size = std::stoi(current_line);
 
@@ -77,7 +78,6 @@ std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
 void PredictionMatrix::CalculateProbabilities(
     const std::map<size_t, std::vector<TrainingImage *>> &image_map) {
 
-  // Traverse each row of an image
   for (size_t row = 0; row < probabilities_.size(); ++row) {
 
     for (size_t col = 0; col < probabilities_[row].size(); ++col) {
