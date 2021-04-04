@@ -15,9 +15,25 @@ public:
    */
   PredictionMatrix();
 
+  /**
+   * Overrides ostream for Prediction Matrix to write a custom serialization to
+   * an output stream
+   *
+   * @param output the output stream to write to
+   * @param matrix the Prediction Matrix to output to the stream
+   * @return the output stream
+   */
   friend std::ostream &operator<<(std::ostream &output,
                                   const PredictionMatrix &matrix);
 
+  /**
+   * Overrides the istream operator for the Prediction Matrix to load and
+   * deserialize a serialized output
+   *
+   * @param input the input stream to read in
+   * @param matrix the Prediction Matrix to populate
+   * @return the input stream
+   */
   friend std::istream &operator>>(std::istream &input,
                                   PredictionMatrix &matrix);
 
@@ -56,7 +72,7 @@ private:
    * @param images the set of all of the images pertaining to that label
    * @return the number of images matching the specified qualifications
    */
-  size_t CalculateNumImagesOfLabelWithPixel(
+  static size_t CalculateNumImagesOfLabelWithPixel(
       size_t i, size_t j, Pixel pixel,
       const std::vector<TrainingImage *> &images);
 

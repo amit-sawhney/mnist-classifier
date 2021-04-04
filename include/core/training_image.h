@@ -47,7 +47,7 @@ public:
 
   /**
    * Move assignment operator
-   * @param source the Training Image to move the data from intot he current
+   * @param source the Training Image to move the data from into the current
    * Training Image
    * @return the current instance of the Training Image
    */
@@ -62,7 +62,7 @@ public:
    * @param pixels the status of each of the pixels in the Training Image
    */
   TrainingImage(size_t image_size, size_t image_label,
-                std::vector<std::vector<Pixel>> pixels);
+                const std::vector<std::vector<Pixel>> &pixels);
 
   /**
    * Instantiates a Training Image by parsing the necessary information from a
@@ -92,8 +92,8 @@ private:
   const char kShadedChar = '#';
   const char kPartiallyShadedChar = '+';
 
-  size_t image_size_;
-  size_t image_label_;
+  size_t image_size_{};
+  size_t image_label_{};
   std::vector<std::vector<Pixel>> pixels_;
 };
 } // namespace naivebayes
