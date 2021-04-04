@@ -64,6 +64,7 @@ private:
 
   /**
    * Initializes the probability matrix structure as specified by the parameters
+   *
    * @param image_size the size of the images going into the matrix
    * @param num_shades the number of shades
    * @param num_labels the number of distinct classifications of numbers

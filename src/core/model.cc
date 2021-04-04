@@ -63,7 +63,8 @@ void Model::Predict() {}
 
 void Model::Load(const std::string &model_file_path) {}
 
-void Model::Save(const std::string &save_file_path) {}
+void Model::Save(const std::string &save_file_path,
+                 const std::string &file_name) {}
 
 std::istream &operator>>(std::istream &input, Model &model) {
   std::string current_line;
