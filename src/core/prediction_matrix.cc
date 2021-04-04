@@ -9,6 +9,73 @@ PredictionMatrix::PredictionMatrix(size_t image_size, size_t num_shades,
   probabilities_ = StructureMatrix(image_size, num_shades, num_labels);
 }
 
+std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
+
+  std::string current_line;
+
+  std::getline(input, current_line);
+  size_t image_size = size_t(std::stoi(current_line));
+
+  std::getline(input, current_line);
+  size_t num_shades = size_t(std::stoi(current_line));
+
+  std::getline(input, current_line);
+  size_t num_labels = size_t(std::stoi(current_line));
+
+  matrix.probabilities_ =
+      matrix.StructureMatrix(image_size, num_shades, num_labels);
+
+  // Traverse each row of an image
+  for (size_t i = 0; i < matrix.probabilities_.size(); ++i) {
+
+    // Traverse each column of an image
+    for (size_t j = 0; j < matrix.probabilities_[i].size(); ++j) {
+
+      // Traverse each shade of an pixel
+      for (size_t pixel = 0; pixel < matrix.probabilities_[i][j].size();
+           ++pixel) {
+
+        // Traverse each type of image
+        for (size_t label = 0;
+             label < matrix.probabilities_[i][j][pixel].size(); ++label) {
+
+          std::getline(input, current_line);
+
+          matrix.probabilities_[i][j][pixel][label] = std::stof(current_line);
+        }
+      }
+    }
+  }
+
+  return input;
+}
+
+std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
+
+  std::vector<std::vector<std::vector<std::vector<float>>>> probabilities =
+      matrix.probabilities_;
+
+  // Traverse each row of an image
+  for (size_t i = 0; i < probabilities.size(); ++i) {
+
+    // Traverse each column of an image
+    for (size_t j = 0; j < probabilities[i].size(); ++j) {
+
+      // Traverse each shade of an pixel
+      for (size_t pixel = 0; pixel < probabilities[i][j].size(); ++pixel) {
+
+        // Traverse each type of image
+        for (size_t label = 0; label < probabilities[i][j][pixel].size();
+             ++label) {
+          output << probabilities[i][j][pixel][label] << std::endl;
+        }
+      }
+    }
+  }
+
+  return output;
+}
+
 void PredictionMatrix::CalculateProbabilities(
     const std::map<size_t, std::vector<TrainingImage *>> &image_map) {
 

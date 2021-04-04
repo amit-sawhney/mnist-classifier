@@ -15,6 +15,12 @@ public:
    */
   PredictionMatrix();
 
+  friend std::ostream &operator<<(std::ostream &output,
+                                  const PredictionMatrix &matrix);
+
+  friend std::istream &operator>>(std::istream &input,
+                                  PredictionMatrix &matrix);
+
   /**
    * Initializes the values dimensions and structure of the probability matrix
    *
