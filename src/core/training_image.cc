@@ -38,6 +38,16 @@ TrainingImage::~TrainingImage() {
 TrainingImage::TrainingImage(size_t image_size, size_t image_label,
                              const std::vector<std::vector<Pixel>> &pixels) {
 
+  if (!pixels.empty()) {
+    if (pixels.size() != pixels[0].size()) {
+      throw std::invalid_argument("Pixel vector is not square");
+    }
+
+    if (pixels.size() != image_size || pixels[0].size() != image_size) {
+      throw std::invalid_argument("Image size does not match pixels");
+    }
+  }
+
   image_size_ = image_size;
   image_label_ = image_label;
   pixels_ = pixels;

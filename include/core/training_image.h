@@ -7,7 +7,7 @@
 namespace naivebayes {
 
 /**
- * Represents one a Training Image for the model
+ * Represents one a Training Image for the Model
  */
 class TrainingImage {
 
