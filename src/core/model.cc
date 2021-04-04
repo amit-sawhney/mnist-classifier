@@ -1,5 +1,6 @@
 #include "iostream"
 #include <core/model.h>
+#include <fstream>
 
 namespace naivebayes {
 
@@ -20,6 +21,7 @@ Model &Model::operator=(const Model &source) {
 
     for (TrainingImage *image : images) {
 
+      // Utilize Training Image copy constructor
       TrainingImage *new_image = new TrainingImage(*image);
       label_training_image_map_[new_image->GetLabel()].push_back(new_image);
     }
@@ -59,12 +61,34 @@ void Model::Train() {
   prediction_matrix_->CalculateProbabilities(label_training_image_map_);
 }
 
-void Model::Predict() {}
+void Model::Predict() {
+  // TODO: Week 2 implementation
+}
 
-void Model::Load(const std::string &model_file_path) {}
+void Model::Load(const std::string &model_file_path) {
+  std::ifstream saved_stream(model_file_path);
+  saved_stream >> *prediction_matrix_;
+}
 
 void Model::Save(const std::string &save_file_path,
-                 const std::string &file_name) {}
+                 const std::string &file_name) {
+
+  std::string full_path = save_file_path + file_name;
+
+  // Access the first training image's size
+  size_t image_size =
+      label_training_image_map_.begin()->second.at(0)->GetSize();
+
+  size_t num_shades = size_t(Pixel::kNumShades);
+
+  std::ofstream os(full_path);
+  os << image_size << std::endl;
+  os << size_t(Pixel::kNumShades) << std::endl;
+  os << label_training_image_map_.size() << std::endl;
+
+  os << *prediction_matrix_;
+  os.close();
+}
 
 std::istream &operator>>(std::istream &input, Model &model) {
   std::string current_line;

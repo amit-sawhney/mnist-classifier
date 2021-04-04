@@ -17,5 +17,8 @@ int main() {
 
   model.Train();
 
+  model.Save("../saved", "/saved_model.txt");
+  model.Load("../saved/saved_model.txt");
+
   return 0;
 }
