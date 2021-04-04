@@ -68,15 +68,12 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
   }
 }
 
-Pixel TrainingImage::GetPixelStatusAt(size_t x, size_t y) {
-  return pixels_.at(x).at(y);
+Pixel TrainingImage::GetPixelStatusAt(size_t row, size_t col) {
+  return pixels_.at(row).at(col);
 }
 
 size_t TrainingImage::GetLabel() const { return image_label_; }
 
 size_t TrainingImage::GetSize() const { return image_size_; }
 
-std::vector<std::vector<Pixel>> TrainingImage::GetPixels() const {
-  return pixels_;
-}
 } // namespace naivebayes

@@ -6,6 +6,9 @@
 
 namespace naivebayes {
 
+/**
+ * Represents the Naive Bayes Model to predict numbers for
+ */
 class Model {
 public:
   /**
