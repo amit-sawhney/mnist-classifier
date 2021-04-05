@@ -15,7 +15,7 @@ TEST_CASE("Training Image Default Constructor",
   SECTION("Image size is 0") { REQUIRE(image.GetSize() == 0); }
 }
 
-TEST_CASE("Explicit Constructor",
+TEST_CASE("Training Image explicit Constructor",
           "[constructor][image_size][image_label][pixels]") {
 
   SECTION("Invalid pixel dimensions") {}
@@ -25,21 +25,29 @@ TEST_CASE("Explicit Constructor",
   SECTION("Correct field initializations") {}
 }
 
-TEST_CASE("Implicit Constructor", "[ascii_image][image_label]") {
+TEST_CASE("Training Image Implicit Constructor", "[ascii_image][image_label]") {
 
   SECTION("Invalid ascii_image dimensions") {}
 
   SECTION("Correct field initializations") {}
 }
 
-TEST_CASE("Copy Constructor", "[constructor]") {
+TEST_CASE("Training Image Copy Constructor", "[constructor][copy]") {
 
   SECTION("Empty to Populated Training Image") {}
 
-  SECTION("Populated to Populated Training Image") {}
+  SECTION("Populated to Empty Training Image") {}
 }
 
-TEST_CASE("Move Constructor", "[constructor]") {
+TEST_CASE("Training Image Move Constructor", "[constructor][move]") {
+
+  SECTION("Empty to Populated Training Image") {}
+
+  SECTION("Populated to Empty Training Image") {}
+}
+
+TEST_CASE("Training Image Copy Assignment operator",
+          "[constructor][operator][copy]") {
 
   SECTION("Empty to Populated Training Image") {}
 
@@ -48,7 +56,7 @@ TEST_CASE("Move Constructor", "[constructor]") {
   SECTION("Populated to Populated Training Image") {}
 }
 
-TEST_CASE("Copy Assignment operator", "[constructor]") {
+TEST_CASE("Training Image Move Assignment operator") {
 
   SECTION("Empty to Populated Training Image") {}
 
