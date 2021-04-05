@@ -14,24 +14,28 @@ Model::Model(const Model &source) { *this = source; }
 Model::Model(Model &&source) noexcept { *this = std::move(source); }
 
 Model &Model::operator=(const Model &source) {
-  ClearModel();
 
-  label_training_image_map_ = std::map<size_t, std::vector<TrainingImage *>>();
-  prediction_matrix_ = nullptr;
+  if (this != &source) {
+    ClearModel();
 
-  for (const auto &itr : source.label_training_image_map_) {
-    std::vector<TrainingImage *> images = itr.second;
+    label_training_image_map_ =
+        std::map<size_t, std::vector<TrainingImage *>>();
+    prediction_matrix_ = nullptr;
 
-    for (TrainingImage *image : images) {
+    for (const auto &itr : source.label_training_image_map_) {
+      std::vector<TrainingImage *> images = itr.second;
 
-      // Utilize Training Image copy constructor
-      TrainingImage *new_image = new TrainingImage(*image);
-      label_training_image_map_[new_image->GetLabel()].push_back(new_image);
+      for (TrainingImage *image : images) {
+
+        // Utilize Training Image copy constructor
+        TrainingImage *new_image = new TrainingImage(*image);
+        label_training_image_map_[new_image->GetLabel()].push_back(new_image);
+      }
     }
+
+    prediction_matrix_ = source.prediction_matrix_;
   }
-
-  prediction_matrix_ = source.prediction_matrix_;
-
+  
   return *this;
 }
 

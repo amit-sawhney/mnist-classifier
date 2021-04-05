@@ -55,14 +55,14 @@ TEST_CASE("Model training", "[train][prediction_matrix]") {
   SECTION("Model updates prediction matrix with correct values") {}
 }
 
-TEST_CASE("Saving model") {
+TEST_CASE("Saving model", "[save][prediction_matrix][ostream]") {
 
   SECTION("Model creates file in specified directory") {}
 
   SECTION("Model is saved in correct format") {}
 }
 
-TEST_CASE("Loading model") {
+TEST_CASE("Loading model", "[loading][prediction_matrix][istream]") {
 
   SECTION("Invalid file data format") {}
 
