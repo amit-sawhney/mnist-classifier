@@ -60,6 +60,12 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
   // Dimensions of the training image is the length of a row in the ascii image
   image_size_ = raw_ascii_image.at(0).length();
 
+  if (raw_ascii_image.empty()) {
+    throw std::invalid_argument("No image data to build off of");
+  } else if (raw_ascii_image.size() != image_size_) {
+    throw std::invalid_argument("Image data is not square");
+  }
+
   for (const std::string &image_line : raw_ascii_image) {
     std::vector<Pixel> pixel_row;
 

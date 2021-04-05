@@ -16,6 +16,15 @@ public:
   PredictionMatrix();
 
   /**
+   * Initializes the values dimensions and structure of the probability matrix
+   *
+   * @param image_size the size of the images going into the matrix
+   * @param num_shades the number of shades
+   * @param num_labels the number of distinct classifications of numbers
+   */
+  PredictionMatrix(size_t image_size, size_t num_shades, size_t num_labels);
+
+  /**
    * Overrides ostream for Prediction Matrix to write a custom serialization to
    * an output stream
    *
@@ -36,15 +45,6 @@ public:
    */
   friend std::istream &operator>>(std::istream &input,
                                   PredictionMatrix &matrix);
-
-  /**
-   * Initializes the values dimensions and structure of the probability matrix
-   *
-   * @param image_size the size of the images going into the matrix
-   * @param num_shades the number of shades
-   * @param num_labels the number of distinct classifications of numbers
-   */
-  PredictionMatrix(size_t image_size, size_t num_shades, size_t num_labels);
 
   /**
    * Sets all of the probabilities within the probability matrix
