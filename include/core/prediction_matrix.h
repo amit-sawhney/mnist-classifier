@@ -20,9 +20,10 @@ public:
    *
    * @param image_size the size of the images going into the matrix
    * @param num_shades the number of shades
-   * @param num_labels the number of distinct classifications of numbers
+   * @param labels all of the labels that the model was trained on
    */
-  PredictionMatrix(size_t image_size, size_t num_shades, size_t num_labels);
+  PredictionMatrix(size_t image_size, size_t num_shades,
+                   std::vector<char> labels);
 
   /**
    * Overrides ostream for Prediction Matrix to write a custom serialization to
@@ -52,14 +53,14 @@ public:
    * @param image_map the set of training images mapped to their label
    */
   void CalculateProbabilities(
-      const std::map<size_t, std::vector<TrainingImage *>> &image_map);
+      const std::map<char, std::vector<TrainingImage *>> &image_map);
 
   /**
    * Clears all of the values in the probability matrix
    */
   void ClearValues();
 
-  std::vector<std::vector<std::vector<std::vector<float>>>>
+  std::vector<std::vector<std::vector<std::map<char, float>>>>
   GetPredictionMatrix() const;
 
 private:
@@ -95,9 +96,12 @@ private:
    * @param num_labels the number of distinct classifications of numbers
    * @return a multidimensional vector representing the probability matrix
    */
-  std::vector<std::vector<std::vector<std::vector<float>>>>
-  StructureMatrix(size_t image_size, size_t num_shades, size_t num_labels);
+  std::vector<std::vector<std::vector<std::map<char, float>>>>
+  StructureMatrix(size_t image_size, size_t num_shades,
+                  const std::vector<char>& all_labels);
+  
+  std::vector<char> Split(std::string string, const std::string& delimiter);
 
-  std::vector<std::vector<std::vector<std::vector<float>>>> probabilities_;
+  std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities_;
 };
 } // namespace naivebayes

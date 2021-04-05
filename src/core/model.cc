@@ -6,7 +6,7 @@ namespace naivebayes {
 
 Model::Model() {
   prediction_matrix_ = nullptr;
-  label_training_image_map_ = std::map<size_t, std::vector<TrainingImage *>>();
+  label_training_image_map_ = std::map<char, std::vector<TrainingImage *>>();
 }
 
 Model::Model(const Model &source) { *this = source; }
@@ -18,8 +18,7 @@ Model &Model::operator=(const Model &source) {
   if (this != &source) {
     ClearModel();
 
-    label_training_image_map_ =
-        std::map<size_t, std::vector<TrainingImage *>>();
+    label_training_image_map_ = std::map<char, std::vector<TrainingImage *>>();
     prediction_matrix_ = nullptr;
 
     for (const auto &itr : source.label_training_image_map_) {
@@ -35,7 +34,7 @@ Model &Model::operator=(const Model &source) {
 
     prediction_matrix_ = source.prediction_matrix_;
   }
-  
+
   return *this;
 }
 
@@ -68,8 +67,10 @@ void Model::Train() {
   size_t image_size =
       label_training_image_map_.begin()->second.at(0)->GetSize();
 
-  prediction_matrix_ = new PredictionMatrix(
-      image_size, size_t(Pixel::kNumShades), label_training_image_map_.size());
+  std::vector<char> labels = GetLabels();
+
+  prediction_matrix_ =
+      new PredictionMatrix(image_size, size_t(Pixel::kNumShades), labels);
 
   prediction_matrix_->CalculateProbabilities(label_training_image_map_);
 
@@ -100,14 +101,19 @@ void Model::Save(const std::string &save_file_path,
   size_t image_size =
       label_training_image_map_.begin()->second.at(0)->GetSize();
   size_t num_shades = size_t(Pixel::kNumShades);
-  size_t num_labels = label_training_image_map_.size();
+  std::vector<char> labels = GetLabels();
 
   std::ofstream os(full_path);
 
   // Save basic model information at top of file
   os << image_size << std::endl;
   os << num_shades << std::endl;
-  os << num_labels << std::endl;
+
+  for (char label : labels) {
+    os << label << " ";
+  }
+  
+  os << std::endl;
 
   os << *prediction_matrix_;
 
@@ -120,13 +126,13 @@ std::istream &operator>>(std::istream &input, Model &model) {
   std::string current_line;
   std::vector<std::string> ascii_image;
 
-  size_t current_label = 0;
+  char current_label = '0';
 
   while (std::getline(input, current_line)) {
     // Text file is on a line with a label
     if (current_line.length() == 1) {
 
-      current_label = std::stoi(current_line);
+      current_label = current_line[0];
       model.UpdateTrainingImageMap(current_label);
 
       // Only create a new image if the data has been collected for it
@@ -151,7 +157,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
   return input;
 }
 
-void Model::UpdateTrainingImageMap(size_t label) {
+void Model::UpdateTrainingImageMap(char label) {
   // Checks if map doesn't contain the label
   if (!label_training_image_map_.count(label)) {
     label_training_image_map_[label] = std::vector<TrainingImage *>{};
@@ -173,6 +179,16 @@ void Model::ClearModel() {
   }
 
   label_training_image_map_.clear();
+}
+
+std::vector<char> Model::GetLabels() const {
+  std::vector<char> labels;
+
+  for (const auto &itr : label_training_image_map_) {
+    labels.push_back(itr.first);
+  }
+
+  return labels;
 }
 
 } // namespace naivebayes

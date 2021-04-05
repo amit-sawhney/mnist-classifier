@@ -97,14 +97,16 @@ private:
    *
    * @param label the label to update the map with
    */
-  void UpdateTrainingImageMap(size_t label);
+  void UpdateTrainingImageMap(char label);
 
   /**
    * Deletes and clears the data from the current Model object
    */
   void ClearModel();
 
-  std::map<size_t, std::vector<TrainingImage *>> label_training_image_map_;
+  std::vector<char> GetLabels() const;
+
+  std::map<char, std::vector<TrainingImage *>> label_training_image_map_;
   PredictionMatrix *prediction_matrix_;
 };
 

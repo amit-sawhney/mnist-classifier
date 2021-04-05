@@ -61,7 +61,7 @@ public:
    * @param image_label the label the Training Image represents
    * @param pixels the status of each of the pixels in the Training Image
    */
-  TrainingImage(size_t image_size, size_t image_label,
+  TrainingImage(size_t image_size, char image_label,
                 const std::vector<std::vector<Pixel>> &pixels);
 
   /**
@@ -72,7 +72,7 @@ public:
    * @param image_label the label the Training Image represents
    */
   TrainingImage(const std::vector<std::string> &raw_ascii_image,
-                size_t image_label);
+                char image_label);
 
   /**
    * Gets the Pixel status at a specific row and column number of the Training
@@ -86,14 +86,14 @@ public:
 
   size_t GetSize() const;
 
-  size_t GetLabel() const;
+  char GetLabel() const;
 
 private:
   const char kShadedChar = '#';
   const char kPartiallyShadedChar = '+';
 
   size_t image_size_{};
-  size_t image_label_{};
+  char image_label_{};
   std::vector<std::vector<Pixel>> pixels_;
 };
 } // namespace naivebayes

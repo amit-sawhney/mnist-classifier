@@ -1,7 +1,7 @@
 #include "core/training_image.h"
 
 namespace naivebayes {
-TrainingImage::TrainingImage() : image_label_(INT_MAX), image_size_(0) {}
+TrainingImage::TrainingImage() : image_label_('\0'), image_size_(0) {}
 
 TrainingImage::TrainingImage(const TrainingImage &source) {
   image_size_ = source.image_size_;
@@ -35,7 +35,7 @@ TrainingImage::~TrainingImage() {
   pixels_.clear();
 }
 
-TrainingImage::TrainingImage(size_t image_size, size_t image_label,
+TrainingImage::TrainingImage(size_t image_size, char image_label,
                              const std::vector<std::vector<Pixel>> &pixels) {
 
   if (!pixels.empty()) {
@@ -54,7 +54,7 @@ TrainingImage::TrainingImage(size_t image_size, size_t image_label,
 }
 
 TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
-                             size_t image_label)
+                             char image_label)
     : image_label_(image_label) {
 
   // Dimensions of the training image is the length of a row in the ascii image
@@ -88,7 +88,7 @@ Pixel TrainingImage::GetPixelStatusAt(size_t row, size_t col) {
   return pixels_.at(row).at(col);
 }
 
-size_t TrainingImage::GetLabel() const { return image_label_; }
+char TrainingImage::GetLabel() const { return image_label_; }
 
 size_t TrainingImage::GetSize() const { return image_size_; }
 

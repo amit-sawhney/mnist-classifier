@@ -19,6 +19,7 @@ int main() {
 
   model.Save("../saved", "/saved_model.txt");
   model.Load("../saved/saved_model.txt");
+  model.Save("../saved", "/saved_model_after.txt");
 
   return 0;
 }
