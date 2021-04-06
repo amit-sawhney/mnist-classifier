@@ -9,9 +9,19 @@ Model::Model() {
   label_training_image_map_ = std::map<char, std::vector<TrainingImage *>>();
 }
 
-Model::Model(const Model &source) { *this = source; }
+Model::Model(const Model &source) {
+  prediction_matrix_ = nullptr;
+  *this = source;
+}
 
-Model::Model(Model &&source) noexcept { *this = std::move(source); }
+Model::Model(Model &&source) noexcept {
+
+  label_training_image_map_ = std::move(source.label_training_image_map_);
+  prediction_matrix_ = source.prediction_matrix_;
+
+  source.label_training_image_map_.clear();
+  source.prediction_matrix_ = nullptr;
+}
 
 Model &Model::operator=(const Model &source) {
 
@@ -45,7 +55,6 @@ Model &Model::operator=(Model &&source) noexcept {
   prediction_matrix_ = source.prediction_matrix_;
 
   source.label_training_image_map_.clear();
-  source.prediction_matrix_->ClearValues();
 
   return *this;
 }
@@ -85,6 +94,7 @@ void Model::Load(const std::string &model_file_path) {
   std::cout << "Loading Model........" << std::endl;
 
   std::ifstream saved_stream(model_file_path);
+  prediction_matrix_ = new PredictionMatrix();
   saved_stream >> *prediction_matrix_;
 
   std::cout << "Finished Loading........." << std::endl;
@@ -153,6 +163,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
   TrainingImage *image = new TrainingImage(ascii_image, current_label);
   ascii_image.clear();
   model.label_training_image_map_[current_label].push_back(image);
+  model.prediction_matrix_ = nullptr;
 
   return input;
 }
@@ -189,6 +200,11 @@ std::vector<char> Model::GetLabels() const {
   }
 
   return labels;
+}
+
+std::map<char, std::vector<TrainingImage *>>
+Model::GetTrainingImageMap() const {
+  return label_training_image_map_;
 }
 
 } // namespace naivebayes

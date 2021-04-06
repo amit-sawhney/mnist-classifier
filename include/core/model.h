@@ -90,6 +90,8 @@ public:
 
   PredictionMatrix *GetPredictionMatrix() const;
 
+  std::map<char, std::vector<TrainingImage *>> GetTrainingImageMap() const;
+
 private:
   /**
    * Updates the labels of the training map by instantiating the map with the
