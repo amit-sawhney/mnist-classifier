@@ -31,6 +31,10 @@ std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
   std::string split_delimiter = " ";
   std::vector<char> labels = matrix.Split(current_line, split_delimiter);
 
+  size_t expected_num_probabilities =
+      image_size * image_size * num_shades * labels.size();
+  size_t count_probabilities = 0;
+
   matrix.probabilities_ =
       matrix.StructureMatrix(image_size, num_shades, labels);
 
@@ -47,11 +51,16 @@ std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
         // Traverse each type of image
         for (auto &label_itr : matrix.probabilities_[row][col][pixel]) {
           std::getline(input, current_line);
-
+          ++count_probabilities;
           label_itr.second = std::stof(current_line);
         }
       }
     }
+  }
+
+  if (expected_num_probabilities != count_probabilities ||
+      count_probabilities == 0) {
+    throw std::invalid_argument("Bad file provided");
   }
 
   return input;
