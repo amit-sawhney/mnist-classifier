@@ -112,7 +112,7 @@ void Model::Save(const std::string &save_file_path,
   for (char label : labels) {
     os << label << " ";
   }
-  
+
   os << std::endl;
 
   os << *prediction_matrix_;
@@ -126,7 +126,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
   std::string current_line;
   std::vector<std::string> ascii_image;
 
-  char current_label = '0';
+  char current_label;
 
   while (std::getline(input, current_line)) {
     // Text file is on a line with a label

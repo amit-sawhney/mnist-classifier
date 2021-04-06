@@ -16,13 +16,13 @@ TEST_CASE("Prediction Matrix default constructor",
 TEST_CASE("Predication Matrix standard constructor", "[constructor]") {
 
   SECTION("Empty Predication Matrix") {
-    PredictionMatrix matrix(0, 0, 0);
+    PredictionMatrix matrix(0, 0, {});
 
     REQUIRE(matrix.GetPredictionMatrix().empty());
   }
 
   SECTION("Positive integer dimensions") {
-    PredictionMatrix matrix(1, 1, 1);
+    PredictionMatrix matrix(1, 1, {'1'});
 
     REQUIRE(matrix.GetPredictionMatrix().size() == 1);
     REQUIRE(matrix.GetPredictionMatrix()[0].size() == 1);
@@ -31,8 +31,8 @@ TEST_CASE("Predication Matrix standard constructor", "[constructor]") {
   }
 
   SECTION("Matrix values are initialized to 0") {
-    PredictionMatrix matrix(1, 1, 1);
-
+    PredictionMatrix matrix(1, 1, {});
+    
     REQUIRE(matrix.GetPredictionMatrix()[0][0][0][0] == 0.0f);
   }
 }

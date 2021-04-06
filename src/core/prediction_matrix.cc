@@ -6,7 +6,7 @@ PredictionMatrix::PredictionMatrix() {
 };
 
 PredictionMatrix::PredictionMatrix(size_t image_size, size_t num_shades,
-                                   std::vector<char> labels) {
+                                   const std::vector<char> &labels) {
 
   probabilities_ = StructureMatrix(image_size, num_shades, labels);
 }
@@ -92,14 +92,14 @@ void PredictionMatrix::CalculateProbabilities(
               image_map.at(label_itr.first);
           Pixel current_pixel = ParseSizeTToPixel(pixel);
 
-          size_t num_labels = image_map.size();
           size_t num_images = CalculateNumImagesOfLabelWithPixel(
               row, col, current_pixel, label_images);
           size_t total_images = label_images.size();
 
           float probability =
               float(kLaplaceSmoothingFactor + num_images) /
-              float(num_labels * kLaplaceSmoothingFactor + total_images);
+              float(size_t(Pixel::kNumShades) * kLaplaceSmoothingFactor +
+                    total_images);
 
           label_itr.second = probability;
         }

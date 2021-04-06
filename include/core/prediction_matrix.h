@@ -23,7 +23,7 @@ public:
    * @param labels all of the labels that the model was trained on
    */
   PredictionMatrix(size_t image_size, size_t num_shades,
-                   std::vector<char> labels);
+                   const std::vector<char>& labels);
 
   /**
    * Overrides ostream for Prediction Matrix to write a custom serialization to
