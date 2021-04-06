@@ -88,6 +88,8 @@ public:
 
   char GetLabel() const;
 
+  std::vector<std::vector<Pixel>> GetPixels() const;
+
 private:
   const char kShadedChar = '#';
   const char kPartiallyShadedChar = '+';

@@ -14,7 +14,9 @@ TrainingImage::TrainingImage(TrainingImage &&source) noexcept {
 }
 
 TrainingImage &TrainingImage::operator=(const TrainingImage &source) {
-  *this = TrainingImage(source);
+  image_size_ = source.image_size_;
+  image_label_ = source.image_label_;
+  pixels_ = source.pixels_;
 
   return *this;
 }
@@ -91,5 +93,9 @@ Pixel TrainingImage::GetPixelStatusAt(size_t row, size_t col) {
 char TrainingImage::GetLabel() const { return image_label_; }
 
 size_t TrainingImage::GetSize() const { return image_size_; }
+
+std::vector<std::vector<Pixel>> TrainingImage::GetPixels() const {
+  return pixels_;
+}
 
 } // namespace naivebayes
