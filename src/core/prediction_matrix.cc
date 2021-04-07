@@ -32,6 +32,14 @@ std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
   std::string split_delimiter = " ";
   std::vector<char> labels = matrix.Split(current_line, split_delimiter);
 
+  std::map<char, float> prior_probabilities;
+  for (size_t prior_count = 0; prior_count < labels.size(); ++prior_count) {
+    std::getline(input, current_line);
+    prior_probabilities[labels[prior_count]] = std::stof(current_line);
+  }
+
+  matrix.prior_probabilities_ = prior_probabilities;
+
   size_t expected_num_probabilities =
       image_size * image_size * num_shades * labels.size();
   size_t count_probabilities = 0;
@@ -41,14 +49,11 @@ std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
 
   // Traverse each row of an image
   for (size_t row = 0; row < matrix.probabilities_.size(); ++row) {
-
     // Traverse each column of an image
     for (size_t col = 0; col < matrix.probabilities_[row].size(); ++col) {
-
       // Traverse each shade of an pixel
       for (size_t pixel = 0; pixel < matrix.probabilities_[row][col].size();
            ++pixel) {
-
         // Traverse each type of image
         for (auto &label_itr : matrix.probabilities_[row][col][pixel]) {
           std::getline(input, current_line);
@@ -71,6 +76,12 @@ std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities =
       matrix.probabilities_;
+
+  std::map<char, float> prior_probabilities = matrix.prior_probabilities_;
+
+  for (auto &prior_itr : prior_probabilities) {
+    output << prior_itr.second << std::endl;
+  }
 
   for (size_t row = 0; row < probabilities.size(); ++row) {
 
