@@ -58,7 +58,7 @@ public:
    * @throws std::exception if the model's training data has not been
    * instantiated
    */
-  void Train() noexcept(false);
+  void Train();
 
   // TODO: This will be implemented in week 2
   void Predict();

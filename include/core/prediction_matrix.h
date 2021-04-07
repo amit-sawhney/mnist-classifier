@@ -23,7 +23,7 @@ public:
    * @param labels all of the labels that the model was trained on
    */
   PredictionMatrix(size_t image_size, size_t num_shades,
-                   const std::vector<char>& labels);
+                   const std::vector<char> &labels);
 
   /**
    * Overrides ostream for Prediction Matrix to write a custom serialization to
@@ -76,9 +76,9 @@ private:
    * @param images the set of all of the images pertaining to that label
    * @return the number of images matching the specified qualifications
    */
-  static size_t CalculateNumImagesOfLabelWithPixel(
-      size_t i, size_t j, Pixel pixel,
-      const std::vector<TrainingImage *> &images);
+  static size_t
+  CalculateNumImageLabelsByPixel(size_t i, size_t j, Pixel pixel,
+                                 const std::vector<TrainingImage *> &images);
 
   /**
    * Parses a numerical representation of a Pixel into an enumeration
@@ -98,9 +98,9 @@ private:
    */
   std::vector<std::vector<std::vector<std::map<char, float>>>>
   StructureMatrix(size_t image_size, size_t num_shades,
-                  const std::vector<char>& all_labels);
-  
-  std::vector<char> Split(std::string string, const std::string& delimiter);
+                  const std::vector<char> &all_labels);
+
+  std::vector<char> Split(std::string string, const std::string &delimiter);
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities_;
 };

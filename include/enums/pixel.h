@@ -2,12 +2,12 @@
 namespace naivebayes {
 
 /**
- * Represents a singular the status of a singular Pixel in an image
+ * Represents the status of a singular Pixel in an image
  */
-enum class Pixel {
+enum class Pixel : size_t {
   kUnshaded,
   kPartiallyShaded,
   kShaded,
-  kNumShades = 3,
+  kNumShades,
 };
 } // namespace naivebayes

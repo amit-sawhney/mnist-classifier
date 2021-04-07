@@ -246,7 +246,7 @@ TEST_CASE("Get Pixel Status", "[pixels]") {
 
     TrainingImage image(ascii_image, '1');
 
-    REQUIRE_THROWS(image.GetPixelStatusAt(2, 0));
+    REQUIRE_THROWS(image.GetPixelStatusByLocation(2, 0));
   }
 
   SECTION("Invalid column index") {
@@ -258,7 +258,7 @@ TEST_CASE("Get Pixel Status", "[pixels]") {
 
     TrainingImage image(ascii_image, '1');
 
-    REQUIRE_THROWS(image.GetPixelStatusAt(0, 2));
+    REQUIRE_THROWS(image.GetPixelStatusByLocation(0, 2));
   }
 
   SECTION("Correct pixel values") {
@@ -272,7 +272,7 @@ TEST_CASE("Get Pixel Status", "[pixels]") {
 
     for (size_t row = 0; row < expected_pixels.size(); ++row) {
       for (size_t col = 0; col < expected_pixels[row].size(); ++col) {
-        REQUIRE(image.GetPixelStatusAt(row, col) == expected_pixels[row][col]);
+        REQUIRE(image.GetPixelStatusByLocation(row, col) == expected_pixels[row][col]);
       }
     }
   }

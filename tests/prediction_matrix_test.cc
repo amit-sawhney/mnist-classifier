@@ -90,13 +90,6 @@ TEST_CASE("Istream operator overload", "[istream]") {
   }
 }
 
-TEST_CASE("Calculate Probabilities", "[training_image_map]") {
-
-  SECTION("Probabilities are properly calculated") {
-    // TODO: check the probability calculations
-  }
-}
-
 TEST_CASE("Ostream operator overload", "[ostream]") {
 
   SECTION("Empty Probabilities") {

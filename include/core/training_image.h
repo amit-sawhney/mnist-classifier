@@ -82,7 +82,7 @@ public:
    * @param col the column number of the pixel
    * @return the Pixel enumeration value of at the specified location
    */
-  Pixel GetPixelStatusAt(size_t row, size_t col);
+  Pixel GetPixelStatusByLocation(size_t row, size_t col);
 
   size_t GetSize() const;
 

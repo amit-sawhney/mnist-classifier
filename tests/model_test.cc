@@ -2,7 +2,7 @@
 
 #include <core/model.h>
 #include <fstream>
-#include <sstream>
+#include <iostream>
 
 using naivebayes::Model;
 
@@ -53,7 +53,7 @@ TEST_CASE("Model Move Constructor", "[constructor][move]") {
     model.Train();
 
     REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][0].at(
-                '0') == Approx(0.2f));
+                '0') == Approx(0.16666667f));
     REQUIRE(copy_model.GetPredictionMatrix() == nullptr);
   }
 }
@@ -140,7 +140,7 @@ TEST_CASE("Model move assignment operator", "[constructor][move][operator]") {
 
     REQUIRE(model.GetPredictionMatrix() != nullptr);
     REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][0].at(
-                '0') == Approx(0.2f));
+                '0') == Approx(0.16666666667f));
   }
 }
 
@@ -177,10 +177,24 @@ TEST_CASE("Model istream operator", "[operator]") {
 
 TEST_CASE("Model training", "[train][prediction_matrix]") {
 
-  SECTION("Model does not train with no training data") {
-    Model model;
+  //  SECTION("Model does not train with no training data") {
+  //    Model model;
+  //
+  //    REQUIRE_THROWS(model.Train());
+  //  }
 
-    REQUIRE_THROWS(model.Train());
+  SECTION("Probabilities are calculated properly") {
+    std::ifstream training_data_test(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-amit-"
+        "sawhney\\data\\test_trainingimagesandlabels.txt");
+
+    Model model;
+    training_data_test >> model;
+
+    model.Train();
+
+    std::cout << model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][2].at(
+        '0');
   }
 }
 

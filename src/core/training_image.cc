@@ -86,7 +86,7 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
   }
 }
 
-Pixel TrainingImage::GetPixelStatusAt(size_t row, size_t col) {
+Pixel TrainingImage::GetPixelStatusByLocation(size_t row, size_t col) {
   return pixels_.at(row).at(col);
 }
 

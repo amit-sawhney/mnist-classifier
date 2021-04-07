@@ -1,4 +1,5 @@
 #include "core/prediction_matrix.h"
+#include <iostream>
 
 namespace naivebayes {
 PredictionMatrix::PredictionMatrix() {
@@ -101,7 +102,7 @@ void PredictionMatrix::CalculateProbabilities(
               image_map.at(label_itr.first);
           Pixel current_pixel = ParseSizeTToPixel(pixel);
 
-          size_t num_images = CalculateNumImagesOfLabelWithPixel(
+          size_t num_images = CalculateNumImageLabelsByPixel(
               row, col, current_pixel, label_images);
           size_t total_images = label_images.size();
 
@@ -117,14 +118,14 @@ void PredictionMatrix::CalculateProbabilities(
   }
 }
 
-size_t PredictionMatrix::CalculateNumImagesOfLabelWithPixel(
+size_t PredictionMatrix::CalculateNumImageLabelsByPixel(
     size_t i, size_t j, Pixel pixel,
     const std::vector<TrainingImage *> &images) {
 
   size_t num_images = 0;
 
   for (TrainingImage *image : images) {
-    if (image->GetPixelStatusAt(i, j) == pixel) {
+    if (image->GetPixelStatusByLocation(i, j) == pixel) {
       ++num_images;
     }
   }

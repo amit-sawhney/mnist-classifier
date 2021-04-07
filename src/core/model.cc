@@ -36,7 +36,6 @@ Model &Model::operator=(const Model &source) {
 
       for (TrainingImage *image : images) {
 
-        // Utilize Training Image copy constructor
         TrainingImage *new_image = new TrainingImage(*image);
         label_training_image_map_[new_image->GetLabel()].push_back(new_image);
       }
@@ -136,13 +135,13 @@ std::istream &operator>>(std::istream &input, Model &model) {
   std::string current_line;
   std::vector<std::string> ascii_image;
 
-  char current_label;
+  std::getline(input, current_line);
+  char current_label = current_line[0];
 
   while (std::getline(input, current_line)) {
     // Text file is on a line with a label
     if (current_line.length() == 1) {
 
-      current_label = current_line[0];
       model.UpdateTrainingImageMap(current_label);
 
       // Only create a new image if the data has been collected for it
@@ -152,6 +151,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
         TrainingImage *image = new TrainingImage(ascii_image, current_label);
         ascii_image.clear();
         model.label_training_image_map_[current_label].push_back(image);
+        current_label = current_line[0];
       }
 
       continue;
@@ -169,7 +169,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
 }
 
 void Model::UpdateTrainingImageMap(char label) {
-  // Checks if map doesn't contain the label
+  // Initialize a new label in the map with an empty vector
   if (!label_training_image_map_.count(label)) {
     label_training_image_map_[label] = std::vector<TrainingImage *>{};
     return;
