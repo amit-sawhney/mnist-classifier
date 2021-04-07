@@ -177,11 +177,11 @@ TEST_CASE("Model istream operator", "[operator]") {
 
 TEST_CASE("Model training", "[train][prediction_matrix]") {
 
-  //  SECTION("Model does not train with no training data") {
-  //    Model model;
-  //
-  //    REQUIRE_THROWS(model.Train());
-  //  }
+  SECTION("Model does not train with no training data") {
+    Model model;
+
+    REQUIRE_THROWS(model.Train());
+  }
 
   SECTION("Probabilities are calculated properly") {
     std::ifstream training_data_test(
@@ -193,8 +193,82 @@ TEST_CASE("Model training", "[train][prediction_matrix]") {
 
     model.Train();
 
-    std::cout << model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][2].at(
-        '0');
+    naivebayes::PredictionMatrix matrix(3, 3, {'0', '1'});
+    std::vector<std::vector<std::vector<std::map<char, float>>>>
+        expected_values = matrix.GetPredictionMatrix();
+
+    expected_values[0][0][0]['0'] = 0.166667f;
+    expected_values[0][0][0]['1'] = 0.333333f;
+    expected_values[0][0][1]['0'] = 0.333333f;
+    expected_values[0][0][1]['1'] = 0.416667f;
+    expected_values[0][0][2]['0'] = 0.5f;
+    expected_values[0][0][2]['1'] = 0.25f;
+    expected_values[0][1][0]['0'] = 0.166667f;
+    expected_values[0][1][0]['1'] = 0.0833333f;
+    expected_values[0][1][1]['0'] = 0.5f;
+    expected_values[0][1][1]['1'] = 0.333333f;
+    expected_values[0][1][2]['0'] = 0.333333f;
+    expected_values[0][1][2]['1'] = 0.583333f;
+    expected_values[0][2][0]['0'] = 0.166667f;
+    expected_values[0][2][0]['1'] = 0.833333f;
+    expected_values[0][2][1]['0'] = 0.333333f;
+    expected_values[0][2][1]['1'] = 0.0833333f;
+    expected_values[0][2][2]['0'] = 0.5f;
+    expected_values[0][2][2]['1'] = 0.0833333f;
+    expected_values[1][0][0]['0'] = 0.166667f;
+    expected_values[1][0][0]['1'] = 0.833333f;
+    expected_values[1][0][1]['0'] = 0.5f;
+    expected_values[1][0][1]['1'] = 0.0833333f;
+    expected_values[1][0][2]['0'] = 0.333333f;
+    expected_values[1][0][2]['1'] = 0.0833333f;
+    expected_values[1][1][0]['0'] = 0.666667f;
+    expected_values[1][1][0]['1'] = 0.0833333f;
+    expected_values[1][1][1]['0'] = 0.166667f;
+    expected_values[1][1][1]['1'] = 0.583333f;
+    expected_values[1][1][2]['0'] = 0.166667f;
+    expected_values[1][1][2]['1'] = 0.333333f;
+    expected_values[1][2][0]['0'] = 0.166667f;
+    expected_values[1][2][0]['1'] = 0.833333f;
+    expected_values[1][2][1]['0'] = 0.5f;
+    expected_values[1][2][1]['1'] = 0.0833333f;
+    expected_values[1][2][2]['0'] = 0.333333f;
+    expected_values[1][2][2]['1'] = 0.0833333f;
+    expected_values[2][0][0]['0'] = 0.166667f;
+    expected_values[2][0][0]['1'] = 0.583333f;
+    expected_values[2][0][1]['0'] = 0.333333f;
+    expected_values[2][0][1]['1'] = 0.166667f;
+    expected_values[2][0][2]['0'] = 0.5f;
+    expected_values[2][0][2]['1'] = 0.25f;
+    expected_values[2][1][0]['0'] = 0.166667f;
+    expected_values[2][1][0]['1'] = 0.0833333f;
+    expected_values[2][1][1]['0'] = 0.5f;
+    expected_values[2][1][1]['1'] = 0.333333f;
+    expected_values[2][1][2]['0'] = 0.333333f;
+    expected_values[2][1][2]['1'] = 0.583333f;
+    expected_values[2][2][0]['0'] = 0.166667f;
+    expected_values[2][2][0]['1'] = 0.583333f;
+    expected_values[2][2][1]['0'] = 0.333333f;
+    expected_values[2][2][1]['1'] = 0.166667f;
+    expected_values[2][2][2]['0'] = 0.5f;
+    expected_values[2][2][2]['1'] = 0.25f;
+
+    std::vector<std::vector<std::vector<std::map<char, float>>>> model_matrix =
+        model.GetPredictionMatrix()->GetPredictionMatrix();
+
+    for (size_t row = 0; row < model_matrix.size(); ++row) {
+
+      for (size_t col = 0; col < model_matrix[row].size(); ++col) {
+
+        for (size_t pixel = 0; pixel < model_matrix[row][col].size(); ++pixel) {
+
+          for (auto &label_itr : model_matrix[row][col][pixel]) {
+
+            REQUIRE(expected_values[row][col][pixel][label_itr.first] ==
+                    Approx(model_matrix[row][col][pixel][label_itr.first]));
+          }
+        }
+      }
+    }
   }
 }
 
