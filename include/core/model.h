@@ -110,6 +110,7 @@ private:
 
   std::map<char, std::vector<TrainingImage *>> label_training_image_map_;
   PredictionMatrix *prediction_matrix_;
+  size_t total_num_images_;
 };
 
 } // namespace naivebayes

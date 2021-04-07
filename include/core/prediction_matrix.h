@@ -53,7 +53,18 @@ public:
    * @param image_map the set of training images mapped to their label
    */
   void CalculateProbabilities(
-      const std::map<char, std::vector<TrainingImage *>> &image_map);
+      const std::map<char, std::vector<TrainingImage *>> &image_map,
+      size_t total_num_images);
+
+  /**
+   * Calculates and sets all of the prior probabilities for the matrix
+   *
+   * @param image_map the map of all of the images to their labls
+   * @param total_num_images the total number of images
+   */
+  void CalculatePriorProbabilities(
+      const std::map<char, std::vector<TrainingImage *>> &image_map,
+      size_t total_num_images);
 
   /**
    * Clears all of the values in the probability matrix
@@ -110,5 +121,6 @@ private:
   std::vector<char> Split(std::string string, const std::string &delimiter);
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities_;
+  std::map<char, float> prior_probabilities_;
 };
 } // namespace naivebayes

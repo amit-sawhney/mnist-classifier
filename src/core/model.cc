@@ -80,7 +80,7 @@ void Model::Train() {
   prediction_matrix_ =
       new PredictionMatrix(image_size, size_t(Pixel::kNumShades), labels);
 
-  prediction_matrix_->CalculateProbabilities(label_training_image_map_);
+  prediction_matrix_->CalculateProbabilities(label_training_image_map_, total_num_images_);
 
   std::cout << "Finished Training................" << std::endl;
 }
@@ -138,6 +138,8 @@ std::istream &operator>>(std::istream &input, Model &model) {
   std::getline(input, current_line);
   char current_label = current_line[0];
 
+  size_t total_images = 0;
+
   while (std::getline(input, current_line)) {
     // Text file is on a line with a label
     if (current_line.length() == 1) {
@@ -152,6 +154,7 @@ std::istream &operator>>(std::istream &input, Model &model) {
         ascii_image.clear();
         model.label_training_image_map_[current_label].push_back(image);
         current_label = current_line[0];
+        ++total_images;
       }
 
       continue;
@@ -164,6 +167,8 @@ std::istream &operator>>(std::istream &input, Model &model) {
   ascii_image.clear();
   model.label_training_image_map_[current_label].push_back(image);
   model.prediction_matrix_ = nullptr;
+  ++total_images;
+  model.total_num_images_ = total_images;
 
   return input;
 }

@@ -89,14 +89,16 @@ std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
 }
 
 void PredictionMatrix::CalculateProbabilities(
-    const std::map<char, std::vector<TrainingImage *>> &image_map) {
+    const std::map<char, std::vector<TrainingImage *>> &image_map,
+    size_t total_num_images) {
+
+  CalculatePriorProbabilities(image_map, total_num_images);
 
   for (size_t row = 0; row < probabilities_.size(); ++row) {
 
     for (size_t col = 0; col < probabilities_[row].size(); ++col) {
 
       for (size_t pixel = 0; pixel < probabilities_[row][col].size(); ++pixel) {
-
         for (auto &label_itr : probabilities_[row][col][pixel]) {
           const std::vector<TrainingImage *> &label_images =
               image_map.at(label_itr.first);
@@ -115,6 +117,16 @@ void PredictionMatrix::CalculateProbabilities(
         }
       }
     }
+  }
+}
+
+void PredictionMatrix::CalculatePriorProbabilities(
+    const std::map<char, std::vector<TrainingImage *>> &image_map,
+    size_t total_num_images) {
+
+  for (auto &image_itr : image_map) {
+    prior_probabilities_[image_itr.first] =
+        float(image_itr.second.size()) / total_num_images;
   }
 }
 
