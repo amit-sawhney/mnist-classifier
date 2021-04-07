@@ -100,6 +100,13 @@ private:
   StructureMatrix(size_t image_size, size_t num_shades,
                   const std::vector<char> &all_labels);
 
+  /**
+   * Splits a string at a specific delimiter
+   *
+   * @param string the string to split up
+   * @param delimiter the string to split by
+   * @return a vector of chars of each character at the split
+   */
   std::vector<char> Split(std::string string, const std::string &delimiter);
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities_;
