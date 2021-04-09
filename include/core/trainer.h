@@ -1,19 +1,19 @@
 #include <map>
 #include <vector>
 
-#include "training_image.h"
+#include "image.h"
 
 namespace naivebayes {
 /**
  * Represents a Matrix of values for the Model to predict on
  */
-class PredictionMatrix {
+class Trainer {
 
 public:
   /**
    * Default Constructor
    */
-  PredictionMatrix();
+  Trainer();
 
   /**
    * Initializes the values dimensions and structure of the probability matrix
@@ -22,7 +22,7 @@ public:
    * @param num_shades the number of shades
    * @param labels all of the labels that the model was trained on
    */
-  PredictionMatrix(size_t image_size, size_t num_shades,
+  Trainer(size_t image_size, size_t num_shades,
                    const std::vector<char> &labels);
 
   /**
@@ -34,7 +34,7 @@ public:
    * @return the output stream
    */
   friend std::ostream &operator<<(std::ostream &output,
-                                  const PredictionMatrix &matrix);
+                                  const Trainer &matrix);
 
   /**
    * Overrides the istream operator for the Prediction Matrix to load and
@@ -44,8 +44,7 @@ public:
    * @param matrix the Prediction Matrix to populate
    * @return the input stream
    */
-  friend std::istream &operator>>(std::istream &input,
-                                  PredictionMatrix &matrix);
+  friend std::istream &operator>>(std::istream &input, Trainer &matrix);
 
   /**
    * Sets all of the probabilities within the probability matrix
@@ -53,7 +52,7 @@ public:
    * @param image_map the set of training images mapped to their label
    */
   void CalculateProbabilities(
-      const std::map<char, std::vector<TrainingImage *>> &image_map,
+      const std::map<char, std::vector<Image *>> &image_map,
       size_t total_num_images);
 
   /**
@@ -63,7 +62,7 @@ public:
    * @param total_num_images the total number of images
    */
   void CalculatePriorProbabilities(
-      const std::map<char, std::vector<TrainingImage *>> &image_map,
+      const std::map<char, std::vector<Image *>> &image_map,
       size_t total_num_images);
 
   /**
@@ -89,7 +88,7 @@ private:
    */
   static size_t
   CalculateNumImageLabelsByPixel(size_t i, size_t j, Pixel pixel,
-                                 const std::vector<TrainingImage *> &images);
+                                 const std::vector<Image *> &images);
 
   /**
    * Parses a numerical representation of a Pixel into an enumeration

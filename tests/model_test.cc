@@ -154,10 +154,10 @@ TEST_CASE("Model istream operator", "[operator]") {
     Model model;
     saved_model1 >> model;
 
-    std::map<char, std::vector<naivebayes::TrainingImage *>> map =
+    std::map<char, std::vector<naivebayes::Image *>> map =
         model.GetTrainingImageMap();
 
-    std::vector<naivebayes::TrainingImage *> images = map.at('0');
+    std::vector<naivebayes::Image *> images = map.at('0');
 
     std::vector<std::vector<naivebayes::Pixel>> expected_pixels = {
         {naivebayes::Pixel::kShaded, naivebayes::Pixel::kShaded,
@@ -193,7 +193,7 @@ TEST_CASE("Model training", "[train][prediction_matrix]") {
 
     model.Train();
 
-    naivebayes::PredictionMatrix matrix(3, 3, {'0', '1'});
+    naivebayes::Trainer matrix(3, 3, {'0', '1'});
     std::vector<std::vector<std::vector<std::map<char, float>>>>
         expected_values = matrix.GetPredictionMatrix();
 

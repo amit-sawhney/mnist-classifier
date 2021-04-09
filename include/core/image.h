@@ -9,25 +9,25 @@ namespace naivebayes {
 /**
  * Represents one a Training Image for the Model
  */
-class TrainingImage {
+class Image {
 
 public:
   /**
    * Default Constructor
    */
-  TrainingImage();
+  Image();
 
   /**
    * Clears all of thee data in a Training Image
    */
-  ~TrainingImage();
+  ~Image();
 
   /**
    * Copy Constructor
    *
    * @param source the Training Image to copy the data from
    */
-  TrainingImage(const TrainingImage &source);
+  Image(const Image &source);
 
   /**
    * Move constructor
@@ -35,7 +35,7 @@ public:
    * @param source the Training Image to move the data from into the current
    * Training Image
    */
-  TrainingImage(TrainingImage &&source) noexcept;
+  Image(Image &&source) noexcept;
 
   /**
    * Copy assignment operator
@@ -43,7 +43,7 @@ public:
    * @param source the Training Image to copy the data from
    * @return the current instance of the Training Image
    */
-  TrainingImage &operator=(const TrainingImage &source);
+  Image &operator=(const Image &source);
 
   /**
    * Move assignment operator
@@ -51,7 +51,7 @@ public:
    * Training Image
    * @return the current instance of the Training Image
    */
-  TrainingImage &operator=(TrainingImage &&source) noexcept;
+  Image &operator=(Image &&source) noexcept;
 
   /**
    * Instantiates a Training Image with by directly setting the data member
@@ -61,7 +61,7 @@ public:
    * @param image_label the label the Training Image represents
    * @param pixels the status of each of the pixels in the Training Image
    */
-  TrainingImage(size_t image_size, char image_label,
+  Image(size_t image_size, char image_label,
                 const std::vector<std::vector<Pixel>> &pixels);
 
   /**
@@ -71,7 +71,7 @@ public:
    * @param raw_ascii_image the string representation of the Training Image
    * @param image_label the label the Training Image represents
    */
-  TrainingImage(const std::vector<std::string> &raw_ascii_image,
+  Image(const std::vector<std::string> &raw_ascii_image,
                 char image_label);
 
   /**

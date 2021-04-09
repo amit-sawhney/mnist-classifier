@@ -1,8 +1,8 @@
 #include <string>
 #include <vector>
 
-#include "prediction_matrix.h"
-#include "training_image.h"
+#include "image.h"
+#include "trainer.h"
 
 namespace naivebayes {
 
@@ -88,9 +88,9 @@ public:
    */
   friend std::istream &operator>>(std::istream &input, Model &model);
 
-  PredictionMatrix *GetPredictionMatrix() const;
+  Trainer *GetPredictionMatrix() const;
 
-  std::map<char, std::vector<TrainingImage *>> GetTrainingImageMap() const;
+  std::map<char, std::vector<Image *>> GetTrainingImageMap() const;
 
 private:
   /**
@@ -108,8 +108,8 @@ private:
 
   std::vector<char> GetLabels() const;
 
-  std::map<char, std::vector<TrainingImage *>> label_training_image_map_;
-  PredictionMatrix *prediction_matrix_;
+  std::map<char, std::vector<Image *>> label_image_map_;
+  Trainer *prediction_matrix_;
   size_t total_num_images_;
 };
 

@@ -1,23 +1,23 @@
-#include "core/prediction_matrix.h"
+#include "core/trainer.h"
 #include <iostream>
 
 namespace naivebayes {
-PredictionMatrix::PredictionMatrix() {
+Trainer::Trainer() {
   probabilities_ = StructureMatrix(0, 0, std::vector<char>{});
 };
 
-PredictionMatrix::PredictionMatrix(size_t image_size, size_t num_shades,
+Trainer::Trainer(size_t image_size, size_t num_shades,
                                    const std::vector<char> &labels) {
 
   probabilities_ = StructureMatrix(image_size, num_shades, labels);
 }
 
 std::vector<std::vector<std::vector<std::map<char, float>>>>
-PredictionMatrix::GetPredictionMatrix() const {
+Trainer::GetPredictionMatrix() const {
   return probabilities_;
 }
 
-std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
+std::istream &operator>>(std::istream &input, Trainer &matrix) {
 
   std::string current_line;
 
@@ -72,7 +72,7 @@ std::istream &operator>>(std::istream &input, PredictionMatrix &matrix) {
   return input;
 }
 
-std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
+std::ostream &operator<<(std::ostream &output, const Trainer &matrix) {
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities =
       matrix.probabilities_;
@@ -99,8 +99,8 @@ std::ostream &operator<<(std::ostream &output, const PredictionMatrix &matrix) {
   return output;
 }
 
-void PredictionMatrix::CalculateProbabilities(
-    const std::map<char, std::vector<TrainingImage *>> &image_map,
+void Trainer::CalculateProbabilities(
+    const std::map<char, std::vector<Image *>> &image_map,
     size_t total_num_images) {
 
   CalculatePriorProbabilities(image_map, total_num_images);
@@ -111,7 +111,7 @@ void PredictionMatrix::CalculateProbabilities(
 
       for (size_t pixel = 0; pixel < probabilities_[row][col].size(); ++pixel) {
         for (auto &label_itr : probabilities_[row][col][pixel]) {
-          const std::vector<TrainingImage *> &label_images =
+          const std::vector<Image *> &label_images =
               image_map.at(label_itr.first);
           Pixel current_pixel = ParseSizeTToPixel(pixel);
 
@@ -131,8 +131,8 @@ void PredictionMatrix::CalculateProbabilities(
   }
 }
 
-void PredictionMatrix::CalculatePriorProbabilities(
-    const std::map<char, std::vector<TrainingImage *>> &image_map,
+void Trainer::CalculatePriorProbabilities(
+    const std::map<char, std::vector<Image *>> &image_map,
     size_t total_num_images) {
 
   for (auto &image_itr : image_map) {
@@ -142,13 +142,13 @@ void PredictionMatrix::CalculatePriorProbabilities(
   }
 }
 
-size_t PredictionMatrix::CalculateNumImageLabelsByPixel(
+size_t Trainer::CalculateNumImageLabelsByPixel(
     size_t i, size_t j, Pixel pixel,
-    const std::vector<TrainingImage *> &images) {
+    const std::vector<Image *> &images) {
 
   size_t num_images = 0;
 
-  for (TrainingImage *image : images) {
+  for (Image *image : images) {
     if (image->GetPixelStatusByLocation(i, j) == pixel) {
       ++num_images;
     }
@@ -157,9 +157,9 @@ size_t PredictionMatrix::CalculateNumImageLabelsByPixel(
   return num_images;
 }
 
-void PredictionMatrix::ClearValues() { probabilities_.clear(); }
+void Trainer::ClearValues() { probabilities_.clear(); }
 
-Pixel PredictionMatrix::ParseSizeTToPixel(size_t pixel_num) {
+Pixel Trainer::ParseSizeTToPixel(size_t pixel_num) {
   switch (pixel_num) {
   case 0:
     return Pixel::kUnshaded;
@@ -173,7 +173,7 @@ Pixel PredictionMatrix::ParseSizeTToPixel(size_t pixel_num) {
 }
 
 std::vector<std::vector<std::vector<std::map<char, float>>>>
-PredictionMatrix::StructureMatrix(size_t image_size, size_t num_shades,
+Trainer::StructureMatrix(size_t image_size, size_t num_shades,
                                   const std::vector<char> &all_labels) {
 
   std::map<char, float> labels;
@@ -189,7 +189,7 @@ PredictionMatrix::StructureMatrix(size_t image_size, size_t num_shades,
   return matrix;
 }
 
-std::vector<char> PredictionMatrix::Split(std::string string,
+std::vector<char> Trainer::Split(std::string string,
                                           const std::string &delimiter) {
 
   size_t delimiter_idx;

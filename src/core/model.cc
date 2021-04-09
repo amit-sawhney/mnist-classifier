@@ -6,7 +6,7 @@ namespace naivebayes {
 
 Model::Model() {
   prediction_matrix_ = nullptr;
-  label_training_image_map_ = std::map<char, std::vector<TrainingImage *>>();
+  label_image_map_ = std::map<char, std::vector<Image *>>();
 }
 
 Model::Model(const Model &source) {
@@ -16,10 +16,10 @@ Model::Model(const Model &source) {
 
 Model::Model(Model &&source) noexcept {
 
-  label_training_image_map_ = std::move(source.label_training_image_map_);
+  label_image_map_ = std::move(source.label_image_map_);
   prediction_matrix_ = source.prediction_matrix_;
 
-  source.label_training_image_map_.clear();
+  source.label_image_map_.clear();
   source.prediction_matrix_ = nullptr;
 }
 
@@ -28,16 +28,16 @@ Model &Model::operator=(const Model &source) {
   if (this != &source) {
     ClearModel();
 
-    label_training_image_map_ = std::map<char, std::vector<TrainingImage *>>();
+    label_image_map_ = std::map<char, std::vector<Image *>>();
     prediction_matrix_ = nullptr;
 
-    for (const auto &itr : source.label_training_image_map_) {
-      std::vector<TrainingImage *> images = itr.second;
+    for (const auto &itr : source.label_image_map_) {
+      std::vector<Image *> images = itr.second;
 
-      for (TrainingImage *image : images) {
+      for (Image *image : images) {
 
-        TrainingImage *new_image = new TrainingImage(*image);
-        label_training_image_map_[new_image->GetLabel()].push_back(new_image);
+        Image *new_image = new Image(*image);
+        label_image_map_[new_image->GetLabel()].push_back(new_image);
       }
     }
 
@@ -50,37 +50,36 @@ Model &Model::operator=(const Model &source) {
 Model &Model::operator=(Model &&source) noexcept {
   ClearModel();
 
-  label_training_image_map_ = std::move(source.label_training_image_map_);
+  label_image_map_ = std::move(source.label_image_map_);
   prediction_matrix_ = source.prediction_matrix_;
 
-  source.label_training_image_map_.clear();
+  source.label_image_map_.clear();
 
   return *this;
 }
 
 Model::~Model() { ClearModel(); }
 
-PredictionMatrix *Model::GetPredictionMatrix() const {
+Trainer *Model::GetPredictionMatrix() const {
   return prediction_matrix_;
 }
 
 void Model::Train() {
-  if (label_training_image_map_.empty()) {
+  if (label_image_map_.empty()) {
     throw std::exception("No training images to train the model on");
   }
 
   std::cout << "Training Model................" << std::endl;
 
   // Access the first training image's size
-  size_t image_size =
-      label_training_image_map_.begin()->second.at(0)->GetSize();
+  size_t image_size = label_image_map_.begin()->second.at(0)->GetSize();
 
   std::vector<char> labels = GetLabels();
 
   prediction_matrix_ =
-      new PredictionMatrix(image_size, size_t(Pixel::kNumShades), labels);
+      new Trainer(image_size, size_t(Pixel::kNumShades), labels);
 
-  prediction_matrix_->CalculateProbabilities(label_training_image_map_, total_num_images_);
+  prediction_matrix_->CalculateProbabilities(label_image_map_, total_num_images_);
 
   std::cout << "Finished Training................" << std::endl;
 }
@@ -93,7 +92,7 @@ void Model::Load(const std::string &model_file_path) {
   std::cout << "Loading Model........" << std::endl;
 
   std::ifstream saved_stream(model_file_path);
-  prediction_matrix_ = new PredictionMatrix();
+  prediction_matrix_ = new Trainer();
   saved_stream >> *prediction_matrix_;
 
   std::cout << "Finished Loading........." << std::endl;
@@ -107,8 +106,7 @@ void Model::Save(const std::string &save_file_path,
   std::string full_path = save_file_path + file_name;
 
   // Access the first training image's size
-  size_t image_size =
-      label_training_image_map_.begin()->second.at(0)->GetSize();
+  size_t image_size = label_image_map_.begin()->second.at(0)->GetSize();
   size_t num_shades = size_t(Pixel::kNumShades);
   std::vector<char> labels = GetLabels();
 
@@ -150,9 +148,9 @@ std::istream &operator>>(std::istream &input, Model &model) {
       if (!ascii_image.empty()) {
 
         // File has read an entire image and is at a new label so add image
-        TrainingImage *image = new TrainingImage(ascii_image, current_label);
+        Image *image = new Image(ascii_image, current_label);
         ascii_image.clear();
-        model.label_training_image_map_[current_label].push_back(image);
+        model.label_image_map_[current_label].push_back(image);
         current_label = current_line[0];
         ++total_images;
       }
@@ -163,9 +161,9 @@ std::istream &operator>>(std::istream &input, Model &model) {
     ascii_image.push_back(current_line);
   }
 
-  TrainingImage *image = new TrainingImage(ascii_image, current_label);
+  Image *image = new Image(ascii_image, current_label);
   ascii_image.clear();
-  model.label_training_image_map_[current_label].push_back(image);
+  model.label_image_map_[current_label].push_back(image);
   model.prediction_matrix_ = nullptr;
   ++total_images;
   model.total_num_images_ = total_images;
@@ -175,8 +173,8 @@ std::istream &operator>>(std::istream &input, Model &model) {
 
 void Model::UpdateTrainingImageMap(char label) {
   // Initialize a new label in the map with an empty vector
-  if (!label_training_image_map_.count(label)) {
-    label_training_image_map_[label] = std::vector<TrainingImage *>{};
+  if (!label_image_map_.count(label)) {
+    label_image_map_[label] = std::vector<Image *>{};
     return;
   }
 }
@@ -184,32 +182,32 @@ void Model::UpdateTrainingImageMap(char label) {
 void Model::ClearModel() {
   delete prediction_matrix_;
 
-  for (const auto &itr : label_training_image_map_) {
-    std::vector<TrainingImage *> images = itr.second;
+  for (const auto &itr : label_image_map_) {
+    std::vector<Image *> images = itr.second;
 
-    for (TrainingImage *image : images) {
+    for (Image *image : images) {
       delete image;
     }
 
     images.clear();
   }
 
-  label_training_image_map_.clear();
+  label_image_map_.clear();
 }
 
 std::vector<char> Model::GetLabels() const {
   std::vector<char> labels;
 
-  for (const auto &itr : label_training_image_map_) {
+  for (const auto &itr : label_image_map_) {
     labels.push_back(itr.first);
   }
 
   return labels;
 }
 
-std::map<char, std::vector<TrainingImage *>>
+std::map<char, std::vector<Image *>>
 Model::GetTrainingImageMap() const {
-  return label_training_image_map_;
+  return label_image_map_;
 }
 
 } // namespace naivebayes

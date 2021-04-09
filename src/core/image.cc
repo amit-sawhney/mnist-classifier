@@ -1,19 +1,19 @@
-#include "core/training_image.h"
+#include "core/image.h"
 
 namespace naivebayes {
-TrainingImage::TrainingImage() : image_label_('\0'), image_size_(0) {}
+Image::Image() : image_label_('\0'), image_size_(0) {}
 
-TrainingImage::TrainingImage(const TrainingImage &source) {
+Image::Image(const Image &source) {
   image_size_ = source.image_size_;
   image_label_ = source.image_label_;
   pixels_ = source.pixels_;
 }
 
-TrainingImage::TrainingImage(TrainingImage &&source) noexcept {
+Image::Image(Image &&source) noexcept {
   *this = std::move(source);
 }
 
-TrainingImage &TrainingImage::operator=(const TrainingImage &source) {
+Image &Image::operator=(const Image &source) {
   image_size_ = source.image_size_;
   image_label_ = source.image_label_;
   pixels_ = source.pixels_;
@@ -21,7 +21,7 @@ TrainingImage &TrainingImage::operator=(const TrainingImage &source) {
   return *this;
 }
 
-TrainingImage &TrainingImage::operator=(TrainingImage &&source) noexcept {
+Image &Image::operator=(Image &&source) noexcept {
   *this = source;
 
   source.image_size_ = 0;
@@ -31,13 +31,13 @@ TrainingImage &TrainingImage::operator=(TrainingImage &&source) noexcept {
   return *this;
 }
 
-TrainingImage::~TrainingImage() {
+Image::~Image() {
   image_size_ = 0;
   image_label_ = 0;
   pixels_.clear();
 }
 
-TrainingImage::TrainingImage(size_t image_size, char image_label,
+Image::Image(size_t image_size, char image_label,
                              const std::vector<std::vector<Pixel>> &pixels) {
 
   if (!pixels.empty()) {
@@ -55,7 +55,7 @@ TrainingImage::TrainingImage(size_t image_size, char image_label,
   pixels_ = pixels;
 }
 
-TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
+Image::Image(const std::vector<std::string> &raw_ascii_image,
                              char image_label)
     : image_label_(image_label) {
 
@@ -86,15 +86,15 @@ TrainingImage::TrainingImage(const std::vector<std::string> &raw_ascii_image,
   }
 }
 
-Pixel TrainingImage::GetPixelStatusByLocation(size_t row, size_t col) {
+Pixel Image::GetPixelStatusByLocation(size_t row, size_t col) {
   return pixels_.at(row).at(col);
 }
 
-char TrainingImage::GetLabel() const { return image_label_; }
+char Image::GetLabel() const { return image_label_; }
 
-size_t TrainingImage::GetSize() const { return image_size_; }
+size_t Image::GetSize() const { return image_size_; }
 
-std::vector<std::vector<Pixel>> TrainingImage::GetPixels() const {
+std::vector<std::vector<Pixel>> Image::GetPixels() const {
   return pixels_;
 }
 

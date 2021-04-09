@@ -1,13 +1,13 @@
 #include <catch2/catch.hpp>
 
-#include "core/training_image.h"
+#include "core/image.h"
 
 using naivebayes::Pixel;
-using naivebayes::TrainingImage;
+using naivebayes::Pixel;
 
 TEST_CASE("Training Image Default Constructor",
           "[constructor][image_size][image_label]") {
-  TrainingImage image;
+  Image image;
 
   SECTION("Image label is properly instantiated") {
     REQUIRE(image.GetLabel() == '\0');
@@ -23,7 +23,7 @@ TEST_CASE("Training Image explicit Constructor",
     std::vector<std::vector<Pixel>> pixels{
         {Pixel::kUnshaded, Pixel::kUnshaded}};
 
-    REQUIRE_THROWS(new TrainingImage(2, '1', pixels));
+    REQUIRE_THROWS(new Image(2, '1', pixels));
   }
 
   SECTION("Incorrect matching of image size and pixel vector") {
@@ -31,7 +31,7 @@ TEST_CASE("Training Image explicit Constructor",
         {Pixel::kUnshaded, Pixel::kUnshaded},
         {Pixel::kUnshaded, Pixel::kUnshaded}};
 
-    REQUIRE_THROWS(new TrainingImage(1, '1', pixels));
+    REQUIRE_THROWS(new Image(1, '1', pixels));
   }
 
   SECTION("Correct field initializations") {
@@ -39,7 +39,7 @@ TEST_CASE("Training Image explicit Constructor",
         {Pixel::kUnshaded, Pixel::kUnshaded},
         {Pixel::kUnshaded, Pixel::kUnshaded}};
 
-    TrainingImage image(2, '1', pixels);
+    Image image(2, '1', pixels);
 
     REQUIRE(image.GetSize() == 2);
     REQUIRE(image.GetLabel() == '1');
@@ -52,13 +52,13 @@ TEST_CASE("Training Image Implicit Constructor", "[ascii_image][image_label]") {
   SECTION("Empty ascii_image") {
     std::vector<std::string> ascii_image{};
 
-    REQUIRE_THROWS(new TrainingImage(ascii_image, '1'));
+    REQUIRE_THROWS(new Image(ascii_image, '1'));
   }
 
   SECTION("Invalid ascii dimensions") {
     std::vector<std::string> ascii_image{"###", "+++"};
 
-    REQUIRE_THROWS(new TrainingImage(ascii_image, '1'));
+    REQUIRE_THROWS(new Image(ascii_image, '1'));
   }
 
   SECTION("Correct field initializations") {
@@ -68,7 +68,7 @@ TEST_CASE("Training Image Implicit Constructor", "[ascii_image][image_label]") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage image(ascii_image, '1');
+    Image image(ascii_image, '1');
 
     REQUIRE(image.GetLabel() == '1');
     REQUIRE(image.GetSize() == 2);
@@ -85,9 +85,9 @@ TEST_CASE("Training Image Copy Constructor", "[constructor][copy]") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage copy_image(ascii_image, '1');
+    Image copy_image(ascii_image, '1');
 
-    TrainingImage image(copy_image);
+    Image image(copy_image);
 
     REQUIRE(image.GetLabel() == '1');
     REQUIRE(image.GetSize() == 2);
@@ -104,9 +104,9 @@ TEST_CASE("Training Image Move Constructor", "[constructor][move]") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage copy_image(ascii_image, '1');
+    Image copy_image(ascii_image, '1');
 
-    TrainingImage image = std::move(copy_image);
+    Image image = std::move(copy_image);
 
     REQUIRE(image.GetLabel() == '1');
     REQUIRE(image.GetSize() == 2);
@@ -122,16 +122,16 @@ TEST_CASE("Training Image Copy Assignment operator",
           "[constructor][operator][copy]") {
 
   SECTION("Empty to Populated Training Image") {
-    TrainingImage image;
+    Image image;
 
     std::vector<std::string> ascii_image{"##", "++"};
     std::vector<std::vector<Pixel>> expected_pixels{
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage copy_image(ascii_image, '1');
+    Image copy_image(ascii_image, '1');
 
-    image = TrainingImage(copy_image);
+    image = Image(copy_image);
 
     REQUIRE(image.GetLabel() == '1');
     REQUIRE(image.GetSize() == 2);
@@ -142,10 +142,10 @@ TEST_CASE("Training Image Copy Assignment operator",
 
     std::vector<std::string> ascii_image{"##", "++"};
 
-    TrainingImage image(ascii_image, '1');
-    TrainingImage copy_image;
+    Image image(ascii_image, '1');
+    Image copy_image;
 
-    image = TrainingImage(copy_image);
+    image = Image(copy_image);
 
     REQUIRE(image.GetLabel() == '\0');
     REQUIRE(image.GetSize() == 0);
@@ -162,10 +162,10 @@ TEST_CASE("Training Image Copy Assignment operator",
          Pixel::kPartiallyShaded},
         {Pixel::kShaded, Pixel::kShaded, Pixel::kShaded}};
 
-    TrainingImage image(ascii_image1, '1');
-    TrainingImage copy_image(ascii_image2, '2');
+    Image image(ascii_image1, '1');
+    Image copy_image(ascii_image2, '2');
 
-    image = TrainingImage(copy_image);
+    image = Image(copy_image);
 
     REQUIRE(image.GetLabel() == '2');
     REQUIRE(image.GetSize() == 3);
@@ -182,9 +182,9 @@ TEST_CASE("Training Image Move Assignment operator") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage copy_image(ascii_image, '1');
+    Image copy_image(ascii_image, '1');
 
-    TrainingImage image;
+    Image image;
     image = std::move(copy_image);
 
     REQUIRE(image.GetLabel() == '1');
@@ -199,9 +199,9 @@ TEST_CASE("Training Image Move Assignment operator") {
   SECTION("Populated to Empty Training Image") {
     std::vector<std::string> ascii_image{"##", "++"};
 
-    TrainingImage copy_image;
+    Image copy_image;
 
-    TrainingImage image(ascii_image, '2');
+    Image image(ascii_image, '2');
     image = std::move(copy_image);
 
     REQUIRE(image.GetLabel() == '\0');
@@ -220,9 +220,9 @@ TEST_CASE("Training Image Move Assignment operator") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage copy_image(ascii_image1, '1');
+    Image copy_image(ascii_image1, '1');
 
-    TrainingImage image(ascii_image2, '2');
+    Image image(ascii_image2, '2');
     image = std::move(copy_image);
 
     REQUIRE(image.GetLabel() == '1');
@@ -244,7 +244,7 @@ TEST_CASE("Get Pixel Status", "[pixels]") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage image(ascii_image, '1');
+    Image image(ascii_image, '1');
 
     REQUIRE_THROWS(image.GetPixelStatusByLocation(2, 0));
   }
@@ -256,7 +256,7 @@ TEST_CASE("Get Pixel Status", "[pixels]") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage image(ascii_image, '1');
+    Image image(ascii_image, '1');
 
     REQUIRE_THROWS(image.GetPixelStatusByLocation(0, 2));
   }
@@ -268,7 +268,7 @@ TEST_CASE("Get Pixel Status", "[pixels]") {
         {Pixel::kShaded, Pixel::kShaded},
         {Pixel::kPartiallyShaded, Pixel::kPartiallyShaded}};
 
-    TrainingImage image(ascii_image, '1');
+    Image image(ascii_image, '1');
 
     for (size_t row = 0; row < expected_pixels.size(); ++row) {
       for (size_t col = 0; col < expected_pixels[row].size(); ++col) {
