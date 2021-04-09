@@ -118,6 +118,7 @@ private:
    * @param delimiter the string to split by
    * @return a vector of chars of each character at the split
    */
+  // TODO: BAD
   std::vector<char> Split(std::string string, const std::string &delimiter);
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities_;

@@ -137,7 +137,8 @@ void PredictionMatrix::CalculatePriorProbabilities(
 
   for (auto &image_itr : image_map) {
     prior_probabilities_[image_itr.first] =
-        float(image_itr.second.size()) / total_num_images;
+        float(kLaplaceSmoothingFactor + image_itr.second.size()) /
+        float(image_map.size() * kLaplaceSmoothingFactor + total_num_images);
   }
 }
 
