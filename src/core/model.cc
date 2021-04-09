@@ -7,6 +7,7 @@ namespace naivebayes {
 Model::Model() {
   model_trainer_ = nullptr;
   label_image_map_ = std::map<char, std::vector<Image *>>();
+  total_num_images_ = 0;
 }
 
 Model::Model(const Model &source) {
@@ -18,9 +19,11 @@ Model::Model(Model &&source) noexcept {
 
   label_image_map_ = std::move(source.label_image_map_);
   model_trainer_ = source.model_trainer_;
+  total_num_images_ = source.total_num_images_;
 
   source.label_image_map_.clear();
   source.model_trainer_ = nullptr;
+  source.total_num_images_ = 0;
 }
 
 Model &Model::operator=(const Model &source) {
@@ -42,6 +45,7 @@ Model &Model::operator=(const Model &source) {
     }
 
     model_trainer_ = source.model_trainer_;
+    total_num_images_ = source.total_num_images_;
   }
 
   return *this;
@@ -52,6 +56,7 @@ Model &Model::operator=(Model &&source) noexcept {
 
   label_image_map_ = std::move(source.label_image_map_);
   model_trainer_ = source.model_trainer_;
+  total_num_images_ = source.total_num_images_;
 
   source.label_image_map_.clear();
 
@@ -60,7 +65,7 @@ Model &Model::operator=(Model &&source) noexcept {
 
 Model::~Model() { ClearModel(); }
 
-Trainer *Model::GetPredictionMatrix() const { return model_trainer_; }
+Trainer *Model::GetTrainer() const { return model_trainer_; }
 
 void Model::Train() {
   if (label_image_map_.empty()) {
@@ -75,7 +80,8 @@ void Model::Train() {
   std::vector<char> labels = GetLabels();
 
   model_trainer_ = new Trainer(image_size, size_t(Pixel::kNumShades), labels);
-  model_trainer_->CalculateProbabilities(label_image_map_, total_num_images_);
+  model_trainer_->CalculateFeatures(label_image_map_);
+  model_trainer_->CalculatePriors(label_image_map_, total_num_images_);
 
   std::cout << "Finished Training................" << std::endl;
 }
@@ -127,38 +133,33 @@ std::istream &operator>>(std::istream &input, Model &model) {
   std::vector<std::string> ascii_image;
 
   std::getline(input, current_line);
-  char current_label = current_line[0];
-
-  size_t total_images = 0;
+  char label = current_line[0];
 
   while (std::getline(input, current_line)) {
     // Text file is on a line with a label
     if (current_line.length() == 1) {
-      model.UpdateTrainingImageMap(current_label);
+      model.UpdateTrainingImageMap(label);
       // Only create a new image if the data has been collected for it
       if (!ascii_image.empty()) {
-        // File has read an entire image and is at a new label so add image
-        Image *image = new Image(ascii_image, current_label);
+        model.AddImage(ascii_image, label);
         ascii_image.clear();
-        model.label_image_map_[current_label].push_back(image);
-        current_label = current_line[0];
-        ++total_images;
+        label = current_line[0];
       }
       continue;
     }
-
     ascii_image.push_back(current_line);
   }
 
-  Image *image = new Image(ascii_image, current_label);
-  ascii_image.clear();
-  ++total_images;
-
-  model.label_image_map_[current_label].push_back(image);
+  model.AddImage(ascii_image, label);
   model.model_trainer_ = nullptr;
-  model.total_num_images_ = total_images;
 
   return input;
+}
+
+void Model::AddImage(const std::vector<std::string> &ascii_image, char label) {
+  Image *image = new Image(ascii_image, label);
+  label_image_map_[label].push_back(image);
+  ++total_num_images_;
 }
 
 void Model::UpdateTrainingImageMap(char label) {
@@ -170,7 +171,6 @@ void Model::UpdateTrainingImageMap(char label) {
 }
 
 void Model::ClearModel() {
-  delete model_trainer_;
 
   for (const auto &itr : label_image_map_) {
     std::vector<Image *> images = itr.second;
@@ -182,7 +182,9 @@ void Model::ClearModel() {
     images.clear();
   }
 
+  delete model_trainer_;
   label_image_map_.clear();
+  total_num_images_ = 0;
 }
 
 std::vector<char> Model::GetLabels() const {

@@ -7,36 +7,35 @@
 
 using naivebayes::Trainer;
 
-TEST_CASE("Prediction Matrix default constructor",
-          "[constructor][prediction_matrix]") {
-  Trainer matrix;
+TEST_CASE("Trainer default constructor", "[constructor][trainer]") {
+  Trainer trainer;
 
-  SECTION("Probability matrix has no values") {
-    REQUIRE(matrix.GetPredictionMatrix().empty());
+  SECTION("Probability trainer has no values") {
+    REQUIRE(trainer.GetTrainer().empty());
   }
 }
 
-TEST_CASE("Predication Matrix standard constructor", "[constructor]") {
+TEST_CASE("Trainer standard constructor", "[constructor]") {
 
-  SECTION("Empty Predication Matrix") {
-    Trainer matrix(0, 0, {});
+  SECTION("Empty Trainer") {
+    Trainer trainer(0, 0, {});
 
-    REQUIRE(matrix.GetPredictionMatrix().empty());
+    REQUIRE(trainer.GetTrainer().empty());
   }
 
   SECTION("Positive integer dimensions") {
-    Trainer matrix(1, 1, {'1'});
+    Trainer trainer(1, 1, {'1'});
 
-    REQUIRE(matrix.GetPredictionMatrix().size() == 1);
-    REQUIRE(matrix.GetPredictionMatrix()[0].size() == 1);
-    REQUIRE(matrix.GetPredictionMatrix()[0][0].size() == 1);
-    REQUIRE(matrix.GetPredictionMatrix()[0][0][0].size() == 1);
+    REQUIRE(trainer.GetTrainer().size() == 1);
+    REQUIRE(trainer.GetTrainer()[0].size() == 1);
+    REQUIRE(trainer.GetTrainer()[0][0].size() == 1);
+    REQUIRE(trainer.GetTrainer()[0][0][0].size() == 1);
   }
 
-  SECTION("Matrix values are initialized to 0") {
-    Trainer matrix(1, 1, {});
+  SECTION("Trainer values are initialized to 0") {
+    Trainer trainer(1, 1, {});
 
-    REQUIRE(matrix.GetPredictionMatrix()[0][0][0][0] == 0.0f);
+    REQUIRE(trainer.GetTrainer()[0][0][0][0] == 0.0f);
   }
 }
 
@@ -45,28 +44,28 @@ TEST_CASE("Istream operator overload", "[istream]") {
   SECTION("Invalid information provided") {
     std::ifstream input_file("../data/empty_training_set.txt");
 
-    Trainer matrix;
+    Trainer trainer;
 
-    REQUIRE_THROWS(input_file >> matrix);
+    REQUIRE_THROWS(input_file >> trainer);
   }
 
   SECTION("Invalid file structure") {
     std::ifstream input_file("../data/bad_training_set.txt");
 
-    Trainer matrix;
+    Trainer trainer;
 
-    REQUIRE_THROWS(input_file >> matrix);
+    REQUIRE_THROWS(input_file >> trainer);
   }
 
   SECTION("Data is properly read in") {
     std::ifstream input_file("C:\\Users\\asawh\\Cinder\\my-projects\\naive-"
                              "bayes-amit-sawhney\\data\\save_model_test.txt");
 
-    Trainer matrix;
+    Trainer trainer;
 
-    input_file >> matrix;
+    input_file >> trainer;
 
-    auto test_matrix = matrix.GetPredictionMatrix();
+    auto test_trainer = trainer.GetTrainer();
 
     size_t image_size = 3;
     size_t num_pixels = 2;
@@ -74,7 +73,7 @@ TEST_CASE("Istream operator overload", "[istream]") {
     for (size_t width = 0; width < image_size; ++width) {
       for (size_t height = 0; height < image_size; ++height) {
         for (size_t pixel = 0; pixel < num_pixels; ++pixel) {
-          for (auto itr : test_matrix[width][height][pixel]) {
+          for (auto itr : test_trainer[width][height][pixel]) {
             REQUIRE(itr.second == Approx(0.05555));
           }
         }
@@ -85,9 +84,9 @@ TEST_CASE("Istream operator overload", "[istream]") {
   SECTION("Empty probability data") {
     std::ifstream input_file("../data/empty_training_set.txt");
 
-    Trainer matrix;
+    Trainer trainer;
 
-    REQUIRE_THROWS(input_file >> matrix);
+    REQUIRE_THROWS(input_file >> trainer);
   }
 }
 
@@ -95,10 +94,10 @@ TEST_CASE("Ostream operator overload", "[ostream]") {
 
   SECTION("Empty Probabilities") {
 
-    Trainer matrix(2, 2, {'0', '1'});
+    Trainer trainer(2, 2, {'0', '1'});
 
     std::stringstream os_stream;
-    os_stream << matrix;
+    os_stream << trainer;
     std::string output_string = os_stream.str();
 
     std::string expected_string =
@@ -111,97 +110,52 @@ TEST_CASE("Ostream operator overload", "[ostream]") {
     std::ifstream input_file("C:\\Users\\asawh\\Cinder\\my-projects\\naive-"
                              "bayes-amit-sawhney\\data\\save_model_test.txt");
 
-    Trainer matrix;
-    input_file >> matrix;
+    Trainer trainer;
+    input_file >> trainer;
 
     std::stringstream os_stream;
-    os_stream << matrix;
+    os_stream << trainer;
     std::string output_string = os_stream.str();
 
-    std::string expected = "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n"
-                           "0.05555\n";
+    std::string expected =
+        "0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
+        "05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
+        "05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
+        "05555\n0.05555\n"
+        "0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n"
+        "0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
+        "05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
+        "05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0"
+        ".05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0"
+        ".05555\n0.05555\n";
 
     REQUIRE(output_string.size() == expected.size());
     REQUIRE(output_string == expected);
   }
 }
 
-TEST_CASE("Clear values", "[prediction_matrix]") {
+TEST_CASE("Clear values", "[trainer]") {
 
-  SECTION("Populated prediction matrix is properly cleared") {
+  SECTION("Populated trainer is properly cleared") {
     std::ifstream input_file("C:\\Users\\asawh\\Cinder\\my-projects\\naive-"
                              "bayes-amit-sawhney\\data\\save_model_test.txt");
 
-    Trainer matrix;
-    input_file >> matrix;
+    Trainer trainer;
+    input_file >> trainer;
 
     std::stringstream os_stream;
-    os_stream << matrix;
+    os_stream << trainer;
     std::string output_string = os_stream.str();
 
-    matrix.ClearValues();
+    trainer.ClearValues();
 
-    REQUIRE(matrix.GetPredictionMatrix().empty());
+    REQUIRE(trainer.GetTrainer().empty());
   }
 
-  SECTION("Empty prediction matrix is cleared with no error") {
-    Trainer matrix(2, 1, {'0'});
+  SECTION("Empty trainer is cleared with no error") {
+    Trainer trainer(2, 1, {'0'});
 
-    REQUIRE_NOTHROW(matrix.ClearValues());
-    REQUIRE(matrix.GetPredictionMatrix().empty());
+    REQUIRE_NOTHROW(trainer.ClearValues());
+    REQUIRE(trainer.GetTrainer().empty());
   }
 }

@@ -6,12 +6,10 @@
 
 using naivebayes::Model;
 
-TEST_CASE("Model Default Constructor", "[constructor][prediction_matrix]") {
+TEST_CASE("Model Default Constructor", "[constructor][trainer]") {
   Model model;
 
-  SECTION("Prediction Matrix is null") {
-    REQUIRE(model.GetPredictionMatrix() == nullptr);
-  }
+  SECTION("Trainer is null") { REQUIRE(model.GetTrainer() == nullptr); }
 }
 
 TEST_CASE("Model Copy Constructor", "[constructor][copy]") {
@@ -30,8 +28,8 @@ TEST_CASE("Model Copy Constructor", "[constructor][copy]") {
     model.Train();
     copy_model.Train();
 
-    REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix() ==
-            copy_model.GetPredictionMatrix()->GetPredictionMatrix());
+    REQUIRE(model.GetTrainer()->GetTrainer() ==
+            copy_model.GetTrainer()->GetTrainer());
   }
 }
 
@@ -52,9 +50,9 @@ TEST_CASE("Model Move Constructor", "[constructor][move]") {
 
     model.Train();
 
-    REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][0].at(
-                '0') == Approx(0.16666667f));
-    REQUIRE(copy_model.GetPredictionMatrix() == nullptr);
+    REQUIRE(model.GetTrainer()->GetTrainer()[0][0][0].at('0') ==
+            Approx(0.16666667f));
+    REQUIRE(copy_model.GetTrainer() == nullptr);
   }
 }
 
@@ -76,8 +74,8 @@ TEST_CASE("Model copy assignment operator", "[constructor][copy][operator]") {
 
     model.Train();
 
-    REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix() ==
-            copy_model.GetPredictionMatrix()->GetPredictionMatrix());
+    REQUIRE(model.GetTrainer()->GetTrainer() ==
+            copy_model.GetTrainer()->GetTrainer());
   }
 
   SECTION("Populated to Empty Model") {
@@ -92,7 +90,7 @@ TEST_CASE("Model copy assignment operator", "[constructor][copy][operator]") {
 
     model = copy_model;
 
-    REQUIRE(model.GetPredictionMatrix() == copy_model.GetPredictionMatrix());
+    REQUIRE(model.GetTrainer() == copy_model.GetTrainer());
   }
 
   SECTION("Populated to Populated Model") {
@@ -117,8 +115,8 @@ TEST_CASE("Model copy assignment operator", "[constructor][copy][operator]") {
     model.Train();
     copy_model.Train();
 
-    REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix() ==
-            copy_model.GetPredictionMatrix()->GetPredictionMatrix());
+    REQUIRE(model.GetTrainer()->GetTrainer() ==
+            copy_model.GetTrainer()->GetTrainer());
   }
 }
 
@@ -138,9 +136,9 @@ TEST_CASE("Model move assignment operator", "[constructor][move][operator]") {
     model = std::move(copy_model);
     model.Train();
 
-    REQUIRE(model.GetPredictionMatrix() != nullptr);
-    REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][0].at(
-                '0') == Approx(0.16666666667f));
+    REQUIRE(model.GetTrainer() != nullptr);
+    REQUIRE(model.GetTrainer()->GetTrainer()[0][0][0].at('0') ==
+            Approx(0.16666666667f));
   }
 }
 
@@ -175,7 +173,7 @@ TEST_CASE("Model istream operator", "[operator]") {
   }
 }
 
-TEST_CASE("Model training", "[train][prediction_matrix]") {
+TEST_CASE("Model training", "[train][trainer]") {
 
   SECTION("Model does not train with no training data") {
     Model model;
@@ -193,9 +191,9 @@ TEST_CASE("Model training", "[train][prediction_matrix]") {
 
     model.Train();
 
-    naivebayes::Trainer matrix(3, 3, {'0', '1'});
+    naivebayes::Trainer trainer(3, 3, {'0', '1'});
     std::vector<std::vector<std::vector<std::map<char, float>>>>
-        expected_values = matrix.GetPredictionMatrix();
+        expected_values = trainer.GetTrainer();
 
     expected_values[0][0][0]['0'] = 0.166667f;
     expected_values[0][0][0]['1'] = 0.333333f;
@@ -252,19 +250,20 @@ TEST_CASE("Model training", "[train][prediction_matrix]") {
     expected_values[2][2][2]['0'] = 0.5f;
     expected_values[2][2][2]['1'] = 0.25f;
 
-    std::vector<std::vector<std::vector<std::map<char, float>>>> model_matrix =
-        model.GetPredictionMatrix()->GetPredictionMatrix();
+    std::vector<std::vector<std::vector<std::map<char, float>>>> model_trainer =
+        model.GetTrainer()->GetTrainer();
 
-    for (size_t row = 0; row < model_matrix.size(); ++row) {
+    for (size_t row = 0; row < model_trainer.size(); ++row) {
 
-      for (size_t col = 0; col < model_matrix[row].size(); ++col) {
+      for (size_t col = 0; col < model_trainer[row].size(); ++col) {
 
-        for (size_t pixel = 0; pixel < model_matrix[row][col].size(); ++pixel) {
+        for (size_t pixel = 0; pixel < model_trainer[row][col].size();
+             ++pixel) {
 
-          for (auto &label_itr : model_matrix[row][col][pixel]) {
+          for (auto &label_itr : model_trainer[row][col][pixel]) {
 
             REQUIRE(expected_values[row][col][pixel][label_itr.first] ==
-                    Approx(model_matrix[row][col][pixel][label_itr.first]));
+                    Approx(model_trainer[row][col][pixel][label_itr.first]));
           }
         }
       }
@@ -272,7 +271,7 @@ TEST_CASE("Model training", "[train][prediction_matrix]") {
   }
 }
 
-TEST_CASE("Saving and loading model", "[save][prediction_matrix][ostream]") {
+TEST_CASE("Saving and loading model", "[save][trainer][ostream]") {
 
   SECTION("Model is saved in correct format") {
 
@@ -293,10 +292,9 @@ TEST_CASE("Saving and loading model", "[save][prediction_matrix][ostream]") {
     saved_model.Load("C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-amit-"
                      "sawhney\\saved\\testing_saved.txt");
 
-    REQUIRE(model.GetPredictionMatrix()->GetPredictionMatrix().size() ==
-            saved_model.GetPredictionMatrix()->GetPredictionMatrix().size());
-    REQUIRE(
-        model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][0].at('0') ==
-        model.GetPredictionMatrix()->GetPredictionMatrix()[0][0][0].at('0'));
+    REQUIRE(model.GetTrainer()->GetTrainer().size() ==
+            saved_model.GetTrainer()->GetTrainer().size());
+    REQUIRE(model.GetTrainer()->GetTrainer()[0][0][0].at('0') ==
+            model.GetTrainer()->GetTrainer()[0][0][0].at('0'));
   }
 }

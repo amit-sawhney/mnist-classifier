@@ -5,7 +5,7 @@
 
 namespace naivebayes {
 /**
- * Represents a Matrix of values for the Model to predict on
+ * Represents a Trainer of values for the Model to predict on
  */
 class Trainer {
 
@@ -16,9 +16,9 @@ public:
   Trainer();
 
   /**
-   * Initializes the values dimensions and structure of the probability matrix
+   * Initializes the values dimensions and structure of the trainer
    *
-   * @param image_size the size of the images going into the matrix
+   * @param image_size the size of the images going into the trainer
    * @param num_shades the number of shades
    * @param labels all of the labels that the model was trained on
    */
@@ -26,54 +26,51 @@ public:
           const std::vector<char> &labels);
 
   /**
-   * Overrides ostream for Prediction Matrix to write a custom serialization to
+   * Overrides ostream for Trainer to write a custom serialization to
    * an output stream
    *
    * @param output the output stream to write to
-   * @param matrix the Prediction Matrix to output to the stream
+   * @param trainer the Trainer to output to the stream
    * @return the output stream
    */
-  friend std::ostream &operator<<(std::ostream &output, const Trainer &matrix);
+  friend std::ostream &operator<<(std::ostream &output, const Trainer &trainer);
 
   /**
-   * Overrides the istream operator for the Prediction Matrix to load and
+   * Overrides the istream operator for the Trainer to load and
    * deserialize a serialized output
    *
    * @param input the input stream to read in
-   * @param matrix the Prediction Matrix to populate
+   * @param trainer the Trainer to populate
    * @return the input stream
    */
-  friend std::istream &operator>>(std::istream &input, Trainer &matrix);
+  friend std::istream &operator>>(std::istream &input, Trainer &trainer);
 
   /**
-   * Sets all of the probabilities within the probability matrix
+   * Sets all of the probabilities within the trainer
    *
    * @param image_map the set of training images mapped to their label
    */
-  void
-  CalculateProbabilities(const std::map<char, std::vector<Image *>> &image_map,
-                         size_t total_num_images);
+  void CalculateFeatures(const std::map<char, std::vector<Image *>> &image_map);
 
   /**
-   * Calculates and sets all of the prior probabilities for the matrix
+   * Calculates and sets all of the prior probabilities for the trainer
    *
-   * @param image_map the map of all of the images to their labls
+   * @param image_map the map of all of the images to their labels
    * @param total_num_images the total number of images
    */
-  void CalculatePriorProbabilities(
-      const std::map<char, std::vector<Image *>> &image_map,
-      size_t total_num_images);
+  void CalculatePriors(const std::map<char, std::vector<Image *>> &image_map,
+                       size_t total_num_images);
 
   /**
-   * Clears all of the values in the probability matrix
+   * Clears all of the values in the trainer
    */
   void ClearValues();
 
   std::vector<std::vector<std::vector<std::map<char, float>>>>
-  GetPredictionMatrix() const;
+  GetTrainer() const;
 
 private:
-  const float kLaplaceSmoothingFactor = 1.0f;
+  const float kLaplace = 1.0f;
   const std::map<size_t, Pixel> kPixelMap = {
       {0, Pixel::kUnshaded}, {1, Pixel::kPartiallyShaded}, {2, Pixel::kShaded}};
 
@@ -81,29 +78,28 @@ private:
    * Calculates the number of Images of a specific label with a specified pixel
    * status
    *
-   * @param i the row position in the image
-   * @param j the column position in the image
+   * @param row the row position in the image
+   * @param col the column position in the image
    * @param pixel the pixel status of the location in the image
    * @param images the set of all of the images pertaining to that label
    * @return the number of images matching the specified qualifications
    */
-  static size_t
-  CalculateNumImageLabelsByPixel(size_t i, size_t j, Pixel pixel,
-                                 const std::vector<Image *> &images);
+  static size_t CountImagesWithPixel(size_t row, size_t col, Pixel pixel,
+                                           const std::vector<Image *> &images);
 
   /**
-   * Initializes the probability matrix structure as specified by the parameters
+   * Initializes the trainer structure as specified by the parameters
    *
-   * @param image_size the size of the images going into the matrix
+   * @param image_size the size of the images going into the trainer
    * @param num_shades the number of shades
    * @param num_labels the number of distinct classifications of numbers
-   * @return a multidimensional vector representing the probability matrix
+   * @return a multidimensional vector representing the trainer
    */
   std::vector<std::vector<std::vector<std::map<char, float>>>>
   BuildStructure(size_t image_size, size_t num_shades,
                  const std::vector<char> &all_labels);
 
-  std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities_;
-  std::map<char, float> prior_probabilities_;
+  std::vector<std::vector<std::vector<std::map<char, float>>>> features_;
+  std::map<char, float> priors_;
 };
 } // namespace naivebayes

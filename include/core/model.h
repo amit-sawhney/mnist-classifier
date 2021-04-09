@@ -17,7 +17,7 @@ public:
   Model();
 
   /**
-   * Destroys the training map and prediction matrix for a Model
+   * Destroys the training map and trainer for a Model
    */
   ~Model();
 
@@ -88,9 +88,11 @@ public:
    */
   friend std::istream &operator>>(std::istream &input, Model &model);
 
-  Trainer *GetPredictionMatrix() const;
+  Trainer *GetTrainer() const;
 
   std::map<char, std::vector<Image *>> GetTrainingImageMap() const;
+
+  void AddImage(const std::vector<std::string> &ascii_image, char label);
 
 private:
   /**
