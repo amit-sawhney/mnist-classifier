@@ -6,12 +6,17 @@ namespace visualizer {
 
 using glm::vec2;
 
-Sketchpad::Sketchpad(const vec2& top_left_corner, size_t num_pixels_per_side,
+Sketchpad::Sketchpad(const vec2 &top_left_corner, size_t num_pixels_per_side,
                      double sketchpad_size, double brush_radius)
     : top_left_corner_(top_left_corner),
       num_pixels_per_side_(num_pixels_per_side),
       pixel_side_length_(sketchpad_size / num_pixels_per_side),
-      brush_radius_(brush_radius) {}
+      brush_radius_(brush_radius) {
+
+  pixel_grid_ = std::vector<std::vector<Pixel>>(
+      num_pixels_per_side_,
+      std::vector<Pixel>(num_pixels_per_side_, Pixel::kUnshaded));
+}
 
 void Sketchpad::Draw() const {
   for (size_t row = 0; row < num_pixels_per_side_; ++row) {
@@ -21,7 +26,7 @@ void Sketchpad::Draw() const {
 
       // TODO: Replace the if-statement below with an if-statement that checks
       // if the pixel at (row, col) is currently shaded
-      if (row * row + col * col <= 20 * 20) {
+      if (pixel_grid_[row][col] == Pixel::kShaded) {
         ci::gl::color(ci::Color::gray(0.3f));
       } else {
         ci::gl::color(ci::Color("white"));
@@ -42,7 +47,7 @@ void Sketchpad::Draw() const {
   }
 }
 
-void Sketchpad::HandleBrush(const vec2& brush_screen_coords) {
+void Sketchpad::HandleBrush(const vec2 &brush_screen_coords) {
   vec2 brush_sketchpad_coords =
       (brush_screen_coords - top_left_corner_) / (float)pixel_side_length_;
 
@@ -52,16 +57,18 @@ void Sketchpad::HandleBrush(const vec2& brush_screen_coords) {
 
       if (glm::distance(brush_sketchpad_coords, pixel_center) <=
           brush_radius_) {
-        // TODO: Add code to shade in the pixel at (row, col)
+        pixel_grid_[row][col] = Pixel::kShaded;
       }
     }
   }
 }
 
 void Sketchpad::Clear() {
-  // TODO: implement this method
+  pixel_grid_ = std::vector<std::vector<Pixel>>(
+      num_pixels_per_side_,
+      std::vector<Pixel>(num_pixels_per_side_, Pixel::kUnshaded));
 }
 
-}  // namespace visualizer
+} // namespace visualizer
 
-}  // namespace naivebayes
+} // namespace naivebayes

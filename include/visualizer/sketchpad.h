@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cinder/gl/gl.h"
+#include "enums/pixel.h"
 
 namespace naivebayes {
 
@@ -58,6 +59,8 @@ class Sketchpad {
   double pixel_side_length_;
 
   double brush_radius_;
+  
+  std::vector<std::vector<Pixel>> pixel_grid_;
 };
 
 }  // namespace visualizer
