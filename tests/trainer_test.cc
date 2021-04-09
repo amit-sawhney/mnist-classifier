@@ -11,7 +11,7 @@ TEST_CASE("Trainer default constructor", "[constructor][trainer]") {
   Trainer trainer;
 
   SECTION("Probability trainer has no values") {
-    REQUIRE(trainer.GetTrainer().empty());
+    REQUIRE(trainer.GetFeatures().empty());
   }
 }
 
@@ -20,22 +20,22 @@ TEST_CASE("Trainer standard constructor", "[constructor]") {
   SECTION("Empty Trainer") {
     Trainer trainer(0, 0, {});
 
-    REQUIRE(trainer.GetTrainer().empty());
+    REQUIRE(trainer.GetFeatures().empty());
   }
 
   SECTION("Positive integer dimensions") {
     Trainer trainer(1, 1, {'1'});
 
-    REQUIRE(trainer.GetTrainer().size() == 1);
-    REQUIRE(trainer.GetTrainer()[0].size() == 1);
-    REQUIRE(trainer.GetTrainer()[0][0].size() == 1);
-    REQUIRE(trainer.GetTrainer()[0][0][0].size() == 1);
+    REQUIRE(trainer.GetFeatures().size() == 1);
+    REQUIRE(trainer.GetFeatures()[0].size() == 1);
+    REQUIRE(trainer.GetFeatures()[0][0].size() == 1);
+    REQUIRE(trainer.GetFeatures()[0][0][0].size() == 1);
   }
 
   SECTION("Trainer values are initialized to 0") {
     Trainer trainer(1, 1, {});
 
-    REQUIRE(trainer.GetTrainer()[0][0][0][0] == 0.0f);
+    REQUIRE(trainer.GetFeatures()[0][0][0][0] == 0.0f);
   }
 }
 
@@ -65,7 +65,7 @@ TEST_CASE("Istream operator overload", "[istream]") {
 
     input_file >> trainer;
 
-    auto test_trainer = trainer.GetTrainer();
+    auto test_trainer = trainer.GetFeatures();
 
     size_t image_size = 3;
     size_t num_pixels = 2;
@@ -149,13 +149,13 @@ TEST_CASE("Clear values", "[trainer]") {
 
     trainer.ClearValues();
 
-    REQUIRE(trainer.GetTrainer().empty());
+    REQUIRE(trainer.GetFeatures().empty());
   }
 
   SECTION("Empty trainer is cleared with no error") {
     Trainer trainer(2, 1, {'0'});
 
     REQUIRE_NOTHROW(trainer.ClearValues());
-    REQUIRE(trainer.GetTrainer().empty());
+    REQUIRE(trainer.GetFeatures().empty());
   }
 }

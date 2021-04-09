@@ -18,9 +18,9 @@ int main() {
 
   model.Train();
 
-  model.Save("../saved/", "saved_model.txt");
-  model.Load("../saved/saved_model.txt");
-  model.Save("../saved/", "saved_model_after.txt");
+  float accuracy = model.GetAccuracy("../data/testimagesandlabels.txt");
+
+  std::cout << accuracy;
 
   return 0;
 }

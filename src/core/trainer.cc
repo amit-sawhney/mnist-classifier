@@ -2,7 +2,7 @@
 #include <iostream>
 
 namespace naivebayes {
-Trainer::Trainer() { features_ = BuildStructure(0, 0, std::vector<char>{}); };
+Trainer::Trainer() { features_ = BuildStructure(0, 0, std::vector<char>{}); }
 
 Trainer::Trainer(size_t image_size, size_t num_shades,
                  const std::vector<char> &labels) {
@@ -11,10 +11,13 @@ Trainer::Trainer(size_t image_size, size_t num_shades,
 }
 
 std::vector<std::vector<std::vector<std::map<char, float>>>>
-Trainer::GetTrainer() const {
+Trainer::GetFeatures() const {
   return features_;
 }
 
+std::map<char, float> Trainer::GetPriors() const { return priors_; }
+
+// TODO: Cut this method down
 std::istream &operator>>(std::istream &input, Trainer &trainer) {
 
   std::string current_line;

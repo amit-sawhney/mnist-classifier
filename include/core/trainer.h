@@ -67,7 +67,9 @@ public:
   void ClearValues();
 
   std::vector<std::vector<std::vector<std::map<char, float>>>>
-  GetTrainer() const;
+  GetFeatures() const;
+  
+  std::map<char, float> GetPriors() const;
 
 private:
   const float kLaplace = 1.0f;

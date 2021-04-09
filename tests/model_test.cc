@@ -28,8 +28,8 @@ TEST_CASE("Model Copy Constructor", "[constructor][copy]") {
     model.Train();
     copy_model.Train();
 
-    REQUIRE(model.GetTrainer()->GetTrainer() ==
-            copy_model.GetTrainer()->GetTrainer());
+    REQUIRE(model.GetTrainer()->GetFeatures() ==
+            copy_model.GetTrainer()->GetFeatures());
   }
 }
 
@@ -50,7 +50,7 @@ TEST_CASE("Model Move Constructor", "[constructor][move]") {
 
     model.Train();
 
-    REQUIRE(model.GetTrainer()->GetTrainer()[0][0][0].at('0') ==
+    REQUIRE(model.GetTrainer()->GetFeatures()[0][0][0].at('0') ==
             Approx(0.16666667f));
     REQUIRE(copy_model.GetTrainer() == nullptr);
   }
@@ -74,8 +74,8 @@ TEST_CASE("Model copy assignment operator", "[constructor][copy][operator]") {
 
     model.Train();
 
-    REQUIRE(model.GetTrainer()->GetTrainer() ==
-            copy_model.GetTrainer()->GetTrainer());
+    REQUIRE(model.GetTrainer()->GetFeatures() ==
+            copy_model.GetTrainer()->GetFeatures());
   }
 
   SECTION("Populated to Empty Model") {
@@ -115,8 +115,8 @@ TEST_CASE("Model copy assignment operator", "[constructor][copy][operator]") {
     model.Train();
     copy_model.Train();
 
-    REQUIRE(model.GetTrainer()->GetTrainer() ==
-            copy_model.GetTrainer()->GetTrainer());
+    REQUIRE(model.GetTrainer()->GetFeatures() ==
+            copy_model.GetTrainer()->GetFeatures());
   }
 }
 
@@ -137,7 +137,7 @@ TEST_CASE("Model move assignment operator", "[constructor][move][operator]") {
     model.Train();
 
     REQUIRE(model.GetTrainer() != nullptr);
-    REQUIRE(model.GetTrainer()->GetTrainer()[0][0][0].at('0') ==
+    REQUIRE(model.GetTrainer()->GetFeatures()[0][0][0].at('0') ==
             Approx(0.16666666667f));
   }
 }
@@ -193,7 +193,7 @@ TEST_CASE("Model training", "[train][trainer]") {
 
     naivebayes::Trainer trainer(3, 3, {'0', '1'});
     std::vector<std::vector<std::vector<std::map<char, float>>>>
-        expected_values = trainer.GetTrainer();
+        expected_values = trainer.GetFeatures();
 
     expected_values[0][0][0]['0'] = 0.166667f;
     expected_values[0][0][0]['1'] = 0.333333f;
@@ -251,7 +251,7 @@ TEST_CASE("Model training", "[train][trainer]") {
     expected_values[2][2][2]['1'] = 0.25f;
 
     std::vector<std::vector<std::vector<std::map<char, float>>>> model_trainer =
-        model.GetTrainer()->GetTrainer();
+        model.GetTrainer()->GetFeatures();
 
     for (size_t row = 0; row < model_trainer.size(); ++row) {
 
@@ -292,9 +292,9 @@ TEST_CASE("Saving and loading model", "[save][trainer][ostream]") {
     saved_model.Load("C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-amit-"
                      "sawhney\\saved\\testing_saved.txt");
 
-    REQUIRE(model.GetTrainer()->GetTrainer().size() ==
-            saved_model.GetTrainer()->GetTrainer().size());
-    REQUIRE(model.GetTrainer()->GetTrainer()[0][0][0].at('0') ==
-            model.GetTrainer()->GetTrainer()[0][0][0].at('0'));
+    REQUIRE(model.GetTrainer()->GetFeatures().size() ==
+            saved_model.GetTrainer()->GetFeatures().size());
+    REQUIRE(model.GetTrainer()->GetFeatures()[0][0][0].at('0') ==
+            model.GetTrainer()->GetFeatures()[0][0][0].at('0'));
   }
 }

@@ -86,7 +86,7 @@ Image::Image(const std::vector<std::string> &raw_ascii_image,
   }
 }
 
-Pixel Image::GetPixelStatusByLocation(size_t row, size_t col) {
+Pixel Image::GetPixelStatusByLocation(size_t row, size_t col) const {
   return pixels_.at(row).at(col);
 }
 

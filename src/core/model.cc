@@ -86,8 +86,74 @@ void Model::Train() {
   std::cout << "Finished Training................" << std::endl;
 }
 
-void Model::Predict() {
-  // TODO: Week 2 implementation
+char Model::Predict(const std::vector<std::string> &ascii_image) {
+  Image predict_image(ascii_image, 0);
+
+  float max_likelihood = INT_MIN;
+  char prediction;
+  std::vector<char> labels = GetLabels();
+
+  for (char label : labels) {
+    float likelihood = CalculateLikelihood(label, predict_image);
+    if (likelihood > max_likelihood) {
+      max_likelihood = likelihood;
+      prediction = label;
+    }
+  }
+
+  return prediction;
+}
+
+float Model::CalculateLikelihood(char label, const Image &image) const {
+
+  auto features = model_trainer_->GetFeatures();
+  float sum_probability = 0.0f;
+  float prior = model_trainer_->GetPriors().at(label);
+
+  sum_probability += std::log(prior);
+
+  for (size_t row = 0; row < features.size(); ++row) {
+    for (size_t col = 0; col < features[row].size(); ++col) {
+      size_t pixel = size_t(image.GetPixelStatusByLocation(row, col));
+      sum_probability += std::log(features[row][col][pixel].at(label));
+    }
+  }
+
+  return sum_probability;
+}
+
+float Model::GetAccuracy(const std::string &testing_file_path) {
+  std::ifstream testing_file(testing_file_path);
+
+  std::string current_line;
+  std::vector<std::string> ascii_image;
+
+  std::getline(testing_file, current_line);
+  char label = current_line[0];
+
+  size_t total_images = 0;
+  size_t correct_predictions = 0;
+
+  while (std::getline(testing_file, current_line)) {
+    if (current_line.length() == 1) {
+
+      if (!ascii_image.empty()) {
+        char prediction = Predict(ascii_image);
+
+        if (prediction == label) {
+          ++correct_predictions;
+        }
+
+        ascii_image.clear();
+        label = current_line[0];
+        ++total_images;
+      }
+      continue;
+    }
+    ascii_image.push_back(current_line);
+  }
+
+  return float(correct_predictions) / float(total_images);
 }
 
 void Model::Load(const std::string &model_file_path) {
