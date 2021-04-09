@@ -3,13 +3,13 @@
 
 namespace naivebayes {
 Trainer::Trainer() {
-  probabilities_ = StructureMatrix(0, 0, std::vector<char>{});
+  probabilities_ = BuildStructure(0, 0, std::vector<char>{});
 };
 
 Trainer::Trainer(size_t image_size, size_t num_shades,
-                                   const std::vector<char> &labels) {
+                 const std::vector<char> &labels) {
 
-  probabilities_ = StructureMatrix(image_size, num_shades, labels);
+  probabilities_ = BuildStructure(image_size, num_shades, labels);
 }
 
 std::vector<std::vector<std::vector<std::map<char, float>>>>
@@ -29,32 +29,33 @@ std::istream &operator>>(std::istream &input, Trainer &matrix) {
   size_t num_shades = std::stoi(current_line);
 
   std::getline(input, current_line);
-  std::string split_delimiter = " ";
-  std::vector<char> labels = matrix.Split(current_line, split_delimiter);
+  size_t num_labels = std::stoi(current_line);
+  std::vector<char> labels(num_labels, 0);
+
+  for (char &label : labels) {
+    std::getline(input, current_line);
+    label = current_line[0];
+  }
+
+  std::getline(input, current_line);
 
   std::map<char, float> prior_probabilities;
-  for (size_t prior_count = 0; prior_count < labels.size(); ++prior_count) {
+  for (char label : labels) {
     std::getline(input, current_line);
-    prior_probabilities[labels[prior_count]] = std::stof(current_line);
+    prior_probabilities[label] = std::stof(current_line);
   }
 
   matrix.prior_probabilities_ = prior_probabilities;
+  matrix.probabilities_ = matrix.BuildStructure(image_size, num_shades, labels);
 
   size_t expected_num_probabilities =
       image_size * image_size * num_shades * labels.size();
   size_t count_probabilities = 0;
 
-  matrix.probabilities_ =
-      matrix.StructureMatrix(image_size, num_shades, labels);
-
-  // Traverse each row of an image
   for (size_t row = 0; row < matrix.probabilities_.size(); ++row) {
-    // Traverse each column of an image
     for (size_t col = 0; col < matrix.probabilities_[row].size(); ++col) {
-      // Traverse each shade of an pixel
       for (size_t pixel = 0; pixel < matrix.probabilities_[row][col].size();
            ++pixel) {
-        // Traverse each type of image
         for (auto &label_itr : matrix.probabilities_[row][col][pixel]) {
           std::getline(input, current_line);
           ++count_probabilities;
@@ -84,11 +85,8 @@ std::ostream &operator<<(std::ostream &output, const Trainer &matrix) {
   }
 
   for (size_t row = 0; row < probabilities.size(); ++row) {
-
     for (size_t col = 0; col < probabilities[row].size(); ++col) {
-
       for (size_t pixel = 0; pixel < probabilities[row][col].size(); ++pixel) {
-
         for (const auto &label_itr : probabilities[row][col][pixel]) {
           output << label_itr.second << std::endl;
         }
@@ -113,7 +111,7 @@ void Trainer::CalculateProbabilities(
         for (auto &label_itr : probabilities_[row][col][pixel]) {
           const std::vector<Image *> &label_images =
               image_map.at(label_itr.first);
-          Pixel current_pixel = ParseSizeTToPixel(pixel);
+          Pixel current_pixel = kPixelMap.at(pixel);
 
           size_t num_images = CalculateNumImageLabelsByPixel(
               row, col, current_pixel, label_images);
@@ -142,9 +140,9 @@ void Trainer::CalculatePriorProbabilities(
   }
 }
 
-size_t Trainer::CalculateNumImageLabelsByPixel(
-    size_t i, size_t j, Pixel pixel,
-    const std::vector<Image *> &images) {
+size_t
+Trainer::CalculateNumImageLabelsByPixel(size_t i, size_t j, Pixel pixel,
+                                        const std::vector<Image *> &images) {
 
   size_t num_images = 0;
 
@@ -159,22 +157,9 @@ size_t Trainer::CalculateNumImageLabelsByPixel(
 
 void Trainer::ClearValues() { probabilities_.clear(); }
 
-Pixel Trainer::ParseSizeTToPixel(size_t pixel_num) {
-  switch (pixel_num) {
-  case 0:
-    return Pixel::kUnshaded;
-  case 1:
-    return Pixel::kPartiallyShaded;
-  case 2:
-    return Pixel::kShaded;
-  default:
-    throw std::invalid_argument("Invalid Pixel Num");
-  }
-}
-
 std::vector<std::vector<std::vector<std::map<char, float>>>>
-Trainer::StructureMatrix(size_t image_size, size_t num_shades,
-                                  const std::vector<char> &all_labels) {
+Trainer::BuildStructure(size_t image_size, size_t num_shades,
+                        const std::vector<char> &all_labels) {
 
   std::map<char, float> labels;
 
@@ -187,27 +172,5 @@ Trainer::StructureMatrix(size_t image_size, size_t num_shades,
       image_size, y_matrix);
 
   return matrix;
-}
-
-std::vector<char> Trainer::Split(std::string string,
-                                          const std::string &delimiter) {
-
-  size_t delimiter_idx;
-  std::string section;
-
-  std::vector<char> split_string;
-
-  while ((delimiter_idx = string.find(delimiter)) != std::string::npos) {
-    section = string.substr(0, delimiter_idx);
-    if (section.size() > 1) {
-      throw std::invalid_argument("Unable to convert to character");
-    }
-
-    char character = section[0];
-    split_string.push_back(character);
-    string.erase(0, delimiter_idx + delimiter.size());
-  }
-
-  return split_string;
 }
 } // namespace naivebayes

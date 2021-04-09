@@ -23,7 +23,7 @@ public:
    * @param labels all of the labels that the model was trained on
    */
   Trainer(size_t image_size, size_t num_shades,
-                   const std::vector<char> &labels);
+          const std::vector<char> &labels);
 
   /**
    * Overrides ostream for Prediction Matrix to write a custom serialization to
@@ -33,8 +33,7 @@ public:
    * @param matrix the Prediction Matrix to output to the stream
    * @return the output stream
    */
-  friend std::ostream &operator<<(std::ostream &output,
-                                  const Trainer &matrix);
+  friend std::ostream &operator<<(std::ostream &output, const Trainer &matrix);
 
   /**
    * Overrides the istream operator for the Prediction Matrix to load and
@@ -51,9 +50,9 @@ public:
    *
    * @param image_map the set of training images mapped to their label
    */
-  void CalculateProbabilities(
-      const std::map<char, std::vector<Image *>> &image_map,
-      size_t total_num_images);
+  void
+  CalculateProbabilities(const std::map<char, std::vector<Image *>> &image_map,
+                         size_t total_num_images);
 
   /**
    * Calculates and sets all of the prior probabilities for the matrix
@@ -75,6 +74,8 @@ public:
 
 private:
   const float kLaplaceSmoothingFactor = 1.0f;
+  const std::map<size_t, Pixel> kPixelMap = {
+      {0, Pixel::kUnshaded}, {1, Pixel::kPartiallyShaded}, {2, Pixel::kShaded}};
 
   /**
    * Calculates the number of Images of a specific label with a specified pixel
@@ -91,14 +92,6 @@ private:
                                  const std::vector<Image *> &images);
 
   /**
-   * Parses a numerical representation of a Pixel into an enumeration
-   *
-   * @param pixel_num the numerical representation
-   * @return the pixel enumeration corresponding to this numerical value
-   */
-  Pixel ParseSizeTToPixel(size_t pixel_num);
-
-  /**
    * Initializes the probability matrix structure as specified by the parameters
    *
    * @param image_size the size of the images going into the matrix
@@ -107,18 +100,8 @@ private:
    * @return a multidimensional vector representing the probability matrix
    */
   std::vector<std::vector<std::vector<std::map<char, float>>>>
-  StructureMatrix(size_t image_size, size_t num_shades,
-                  const std::vector<char> &all_labels);
-
-  /**
-   * Splits a string at a specific delimiter
-   *
-   * @param string the string to split up
-   * @param delimiter the string to split by
-   * @return a vector of chars of each character at the split
-   */
-  // TODO: BAD
-  std::vector<char> Split(std::string string, const std::string &delimiter);
+  BuildStructure(size_t image_size, size_t num_shades,
+                 const std::vector<char> &all_labels);
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> probabilities_;
   std::map<char, float> prior_probabilities_;

@@ -109,7 +109,7 @@ private:
   std::vector<char> GetLabels() const;
 
   std::map<char, std::vector<Image *>> label_image_map_;
-  Trainer *prediction_matrix_;
+  Trainer *model_trainer_;
   size_t total_num_images_;
 };
 
