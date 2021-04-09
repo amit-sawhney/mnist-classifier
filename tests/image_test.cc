@@ -3,7 +3,7 @@
 #include "core/image.h"
 
 using naivebayes::Pixel;
-using naivebayes::Pixel;
+using naivebayes::Image;
 
 TEST_CASE("Training Image Default Constructor",
           "[constructor][image_size][image_label]") {

@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 #include "core/trainer.h"
@@ -117,15 +118,65 @@ TEST_CASE("Ostream operator overload", "[ostream]") {
     os_stream << matrix;
     std::string output_string = os_stream.str();
 
-    std::string expected_string =
-        "0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
-        "05555\n0."
-        "05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
-        "05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n0."
-        "05555\n0.05555\n0.05555\n0.05555\n0.05555\n0.05555\n";
+    std::string expected = "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n"
+                           "0.05555\n";
 
-    REQUIRE(output_string.size() == expected_string.size());
-    REQUIRE(output_string == expected_string);
+    REQUIRE(output_string.size() == expected.size());
+    REQUIRE(output_string == expected);
   }
 }
 
