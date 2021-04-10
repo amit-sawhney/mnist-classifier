@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <vector>
 
@@ -61,7 +63,9 @@ public:
   void Train();
 
   // TODO: This will be implemented in week 2
-  char Predict(const std::vector<std::string>& ascii_image);
+  char Predict(const std::vector<std::string> &ascii_image);
+
+  char Predict(const std::vector<std::vector<Pixel>> &pixel_grid);
 
   /**
    * Serializes the Model into a file at the specified location
@@ -93,7 +97,7 @@ public:
   std::map<char, std::vector<Image *>> GetTrainingImageMap() const;
 
   void AddImage(const std::vector<std::string> &ascii_image, char label);
-  
+
   float GetAccuracy(const std::string &testing_file_path);
 
 private:
@@ -104,7 +108,7 @@ private:
    * @param label the label to update the map with
    */
   void UpdateTrainingImageMap(char label);
-  
+
   float CalculateLikelihood(char label, const Image &image) const;
 
   /**

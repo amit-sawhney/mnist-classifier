@@ -69,6 +69,10 @@ void Sketchpad::Clear() {
       std::vector<Pixel>(num_pixels_per_side_, Pixel::kUnshaded));
 }
 
+std::vector<std::vector<Pixel>> Sketchpad::GetPixelGrid() const {
+  return pixel_grid_;
+}
+
 } // namespace visualizer
 
 } // namespace naivebayes

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <map>
 #include <vector>
 
@@ -68,11 +70,13 @@ public:
 
   std::vector<std::vector<std::vector<std::map<char, float>>>>
   GetFeatures() const;
-  
+
   std::map<char, float> GetPriors() const;
+  
+  std::vector<char> GetLabels() const;
 
 private:
-  const float kLaplace = 1.0f;
+  const float kLaplace = 0.0001f;
   const std::map<size_t, Pixel> kPixelMap = {
       {0, Pixel::kUnshaded}, {1, Pixel::kPartiallyShaded}, {2, Pixel::kShaded}};
 
@@ -87,7 +91,7 @@ private:
    * @return the number of images matching the specified qualifications
    */
   static size_t CountImagesWithPixel(size_t row, size_t col, Pixel pixel,
-                                           const std::vector<Image *> &images);
+                                     const std::vector<Image *> &images);
 
   /**
    * Initializes the trainer structure as specified by the parameters
@@ -103,5 +107,6 @@ private:
 
   std::vector<std::vector<std::vector<std::map<char, float>>>> features_;
   std::map<char, float> priors_;
+  std::vector<char> labels_;
 };
 } // namespace naivebayes

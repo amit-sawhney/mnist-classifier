@@ -89,6 +89,12 @@ void Model::Train() {
 char Model::Predict(const std::vector<std::string> &ascii_image) {
   Image predict_image(ascii_image, 0);
 
+  return Predict(predict_image.GetPixels());
+}
+
+char Model::Predict(const std::vector<std::vector<Pixel>> &pixel_grid) {
+  Image predict_image(pixel_grid.size(), 0, pixel_grid);
+
   float max_likelihood = INT_MIN;
   char prediction;
   std::vector<char> labels = GetLabels();
@@ -254,6 +260,11 @@ void Model::ClearModel() {
 }
 
 std::vector<char> Model::GetLabels() const {
+
+  if (label_image_map_.empty()) {
+    return model_trainer_->GetLabels();
+  }
+
   std::vector<char> labels;
 
   for (const auto &itr : label_image_map_) {

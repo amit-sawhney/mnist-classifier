@@ -2,6 +2,7 @@
 
 #include "cinder/gl/gl.h"
 #include "enums/pixel.h"
+#include "core/model.h"
 
 namespace naivebayes {
 
@@ -49,6 +50,8 @@ class Sketchpad {
    * Set all of the sketchpad pixels to an unshaded state.
    */
   void Clear();
+  
+  std::vector<std::vector<Pixel>> GetPixelGrid() const;
 
  private:
   glm::vec2 top_left_corner_;

@@ -38,6 +38,8 @@ std::istream &operator>>(std::istream &input, Trainer &trainer) {
     label = current_line[0];
   }
 
+  trainer.labels_ = labels;
+
   std::getline(input, current_line);
 
   std::map<char, float> priors;
@@ -163,4 +165,6 @@ Trainer::BuildStructure(size_t image_size, size_t num_shades,
 
   return trainer;
 }
+
+std::vector<char> Trainer::GetLabels() const { return labels_; }
 } // namespace naivebayes

@@ -50,7 +50,7 @@ Image::Image(size_t image_size, char image_label,
     }
   }
 
-  image_size_ = image_size;
+  image_size_ = pixels.size();
   image_label_ = image_label;
   pixels_ = pixels;
 }
