@@ -17,41 +17,21 @@ Trainer::GetFeatures() const {
 
 std::map<char, float> Trainer::GetPriors() const { return priors_; }
 
-// TODO: Cut this method down
 std::istream &operator>>(std::istream &input, Trainer &trainer) {
 
   std::string current_line;
+  size_t size = trainer.GetNextSizeT(input);
+  size_t shades = trainer.GetNextSizeT(input);
+  size_t num_labels = trainer.GetNextSizeT(input);
 
-  // Collect the model information at the top of the file
-  std::getline(input, current_line);
-  size_t size = std::stoi(current_line);
-
-  std::getline(input, current_line);
-  size_t shades = std::stoi(current_line);
-
-  std::getline(input, current_line);
-  size_t num_labels = std::stoi(current_line);
-  std::vector<char> labels(num_labels, 0);
-
-  for (char &label : labels) {
-    std::getline(input, current_line);
-    label = current_line[0];
-  }
-
+  std::vector<char> labels = trainer.GetFileLabels(input, num_labels);
   trainer.labels_ = labels;
 
   std::getline(input, current_line);
 
-  std::map<char, float> priors;
-  for (char label : labels) {
-    std::getline(input, current_line);
-    priors[label] = std::stof(current_line);
-  }
-
+  std::map<char, float> priors = trainer.GetFilePriors(input, labels);
   trainer.priors_ = priors;
   trainer.features_ = trainer.BuildStructure(size, shades, labels);
-
-  size_t expected_features = size * size * shades * labels.size();
   size_t features = 0;
 
   for (size_t row = 0; row < trainer.features_.size(); ++row) {
@@ -67,11 +47,52 @@ std::istream &operator>>(std::istream &input, Trainer &trainer) {
     }
   }
 
-  if (expected_features != features || features == 0) {
+  trainer.ValidateInputSize(size, shades, labels.size(), features);
+  return input;
+}
+
+void Trainer::ValidateInputSize(size_t size, size_t num_shades,
+                                size_t num_labels, size_t num_features) const {
+
+  size_t expected_features = size * size * num_shades * num_labels;
+  bool isValid = expected_features == num_features;
+
+  if (!isValid) {
     throw std::invalid_argument("Bad file provided");
   }
+}
 
-  return input;
+std::map<char, float> Trainer::GetFilePriors(std::istream &input,
+                                             std::vector<char> labels) {
+  std::string current_line;
+
+  std::map<char, float> priors;
+
+  for (char label : labels) {
+    std::getline(input, current_line);
+    priors[label] = std::stof(current_line);
+  }
+
+  return priors;
+}
+
+std::vector<char> Trainer::GetFileLabels(std::istream &input,
+                                         size_t num_labels) {
+  std::vector<char> labels(num_labels, 0);
+  std::string current_line;
+
+  for (char &label : labels) {
+    std::getline(input, current_line);
+    label = current_line[0];
+  }
+
+  return labels;
+}
+
+size_t Trainer::GetNextSizeT(std::istream &input) {
+  std::string line;
+  std::getline(input, line);
+  return std::stoi(line);
 }
 
 std::ostream &operator<<(std::ostream &output, const Trainer &trainer) {
@@ -149,19 +170,18 @@ size_t Trainer::CountImagesWithPixel(size_t row, size_t col, Pixel pixel,
 
 void Trainer::ClearValues() { features_.clear(); }
 
-std::vector<std::vector<std::vector<std::map<char, float>>>>
-Trainer::BuildStructure(size_t image_size, size_t num_shades,
-                        const std::vector<char> &all_labels) {
+FeatureVector Trainer::BuildStructure(size_t image_size, size_t num_shades,
+                                      const std::vector<char> &all_labels) {
 
   std::map<char, float> labels;
 
   for (char label : all_labels) {
     labels[label] = 0.0f;
   }
+
   std::vector<std::map<char, float>> shades(num_shades, labels);
   std::vector<std::vector<std::map<char, float>>> trainer_y(image_size, shades);
-  std::vector<std::vector<std::vector<std::map<char, float>>>> trainer(
-      image_size, trainer_y);
+  FeatureVector trainer(image_size, trainer_y);
 
   return trainer;
 }

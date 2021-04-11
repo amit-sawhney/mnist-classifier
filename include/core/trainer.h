@@ -6,6 +6,10 @@
 #include "image.h"
 
 namespace naivebayes {
+
+typedef std::vector<std::vector<std::vector<std::map<char, float>>>>
+    FeatureVector;
+
 /**
  * Represents a Trainer of values for the Model to predict on
  */
@@ -68,15 +72,14 @@ public:
    */
   void ClearValues();
 
-  std::vector<std::vector<std::vector<std::map<char, float>>>>
-  GetFeatures() const;
+  FeatureVector GetFeatures() const;
 
   std::map<char, float> GetPriors() const;
-  
+
   std::vector<char> GetLabels() const;
 
 private:
-  const float kLaplace = 0.0001f;
+  const float kLaplace = 1.0f;
   const std::map<size_t, Pixel> kPixelMap = {
       {0, Pixel::kUnshaded}, {1, Pixel::kPartiallyShaded}, {2, Pixel::kShaded}};
 
@@ -101,11 +104,20 @@ private:
    * @param num_labels the number of distinct classifications of numbers
    * @return a multidimensional vector representing the trainer
    */
-  std::vector<std::vector<std::vector<std::map<char, float>>>>
-  BuildStructure(size_t image_size, size_t num_shades,
-                 const std::vector<char> &all_labels);
+  FeatureVector BuildStructure(size_t image_size, size_t num_shades,
+                               const std::vector<char> &all_labels);
 
-  std::vector<std::vector<std::vector<std::map<char, float>>>> features_;
+  std::vector<char> GetFileLabels(std::istream &input, size_t num_labels);
+
+  size_t GetNextSizeT(std::istream &input);
+
+  std::map<char, float> GetFilePriors(std::istream &input,
+                                      std::vector<char> labels);
+
+  void ValidateInputSize(size_t size, size_t num_shades,
+                         size_t num_labels, size_t num_features) const;
+
+  FeatureVector features_;
   std::map<char, float> priors_;
   std::vector<char> labels_;
 };

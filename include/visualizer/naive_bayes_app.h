@@ -14,7 +14,7 @@ namespace visualizer {
  * classify it.
  */
 class NaiveBayesApp : public ci::app::App {
- public:
+public:
   NaiveBayesApp();
 
   void draw() override;
@@ -28,12 +28,12 @@ class NaiveBayesApp : public ci::app::App {
   const double kMargin = 100;
   const size_t kImageDimension = 28;
 
- private:
+private:
   Sketchpad sketchpad_;
   int current_prediction_ = -1;
   Model model_;
 };
 
-}  // namespace visualizer
+} // namespace visualizer
 
-}  // namespace naivebayes
+} // namespace naivebayes

@@ -9,9 +9,7 @@ Image::Image(const Image &source) {
   pixels_ = source.pixels_;
 }
 
-Image::Image(Image &&source) noexcept {
-  *this = std::move(source);
-}
+Image::Image(Image &&source) noexcept { *this = std::move(source); }
 
 Image &Image::operator=(const Image &source) {
   image_size_ = source.image_size_;
@@ -38,8 +36,7 @@ Image::~Image() {
 }
 
 Image::Image(size_t image_size, char image_label,
-                             const std::vector<std::vector<Pixel>> &pixels) {
-
+             const std::vector<std::vector<Pixel>> &pixels) {
   if (!pixels.empty()) {
     if (pixels.size() != pixels[0].size()) {
       throw std::invalid_argument("Pixel vector is not square");
@@ -55,8 +52,7 @@ Image::Image(size_t image_size, char image_label,
   pixels_ = pixels;
 }
 
-Image::Image(const std::vector<std::string> &raw_ascii_image,
-                             char image_label)
+Image::Image(const std::vector<std::string> &raw_ascii_image, char image_label)
     : image_label_(image_label) {
 
   // Dimensions of the training image is the length of a row in the ascii image
@@ -94,8 +90,6 @@ char Image::GetLabel() const { return image_label_; }
 
 size_t Image::GetSize() const { return image_size_; }
 
-std::vector<std::vector<Pixel>> Image::GetPixels() const {
-  return pixels_;
-}
+std::vector<std::vector<Pixel>> Image::GetPixels() const { return pixels_; }
 
 } // namespace naivebayes
