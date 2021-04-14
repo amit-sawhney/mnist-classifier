@@ -130,7 +130,6 @@ float Model::CalculateLikelihood(char label, const Image &image) const {
 
 float Model::GetAccuracy(const std::string &testing_file_path) {
   std::ifstream testing_file(testing_file_path);
-
   std::string current_line;
   std::vector<std::string> ascii_image;
 
@@ -146,9 +145,12 @@ float Model::GetAccuracy(const std::string &testing_file_path) {
       if (!ascii_image.empty()) {
         char prediction = Predict(ascii_image);
 
-        if (prediction == label) {
+        bool is_correct_classification = prediction == label;
+        if (is_correct_classification) {
           ++correct_predictions;
         }
+
+        ++confusion_matrix_[label][is_correct_classification];
 
         ascii_image.clear();
         label = current_line[0];
@@ -167,7 +169,7 @@ void Model::Load(const std::string &model_file_path) {
 
   std::ifstream saved_stream(model_file_path);
   model_trainer_ = new Trainer();
-  // Overloaded operator to train to load modle
+  // Overloaded operator to train to load model
   saved_stream >> *model_trainer_;
 
   std::cout << "Finished Loading........." << std::endl;
@@ -273,6 +275,25 @@ std::vector<char> Model::GetLabels() const {
 
 std::map<char, std::vector<Image *>> Model::GetTrainingImageMap() const {
   return label_image_map_;
+}
+
+void Model::PrintConfusionMatrix() const {
+
+  if (confusion_matrix_.empty()) {
+    std::cout << "Model hasn't been tested. Run GetAccuracy()" << std::endl;
+    return;
+  }
+
+  std::cout << "-----------Confusion matrix-----------" << std::endl;
+  std::cout << " Label  |     Correct     |    Wrong  " << std::endl;
+
+  std::string spacing_string = "                ";
+  
+  for (auto label_itr : confusion_matrix_) {
+    std::cout << label_itr.first << spacing_string;
+    std::cout << label_itr.second.at(true) << spacing_string;
+    std::cout << label_itr.second.at(false) << std::endl;
+  }
 }
 
 } // namespace naivebayes

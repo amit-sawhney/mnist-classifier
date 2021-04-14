@@ -1,4 +1,3 @@
-#include "string"
 #include <iostream>
 
 #include <algorithm>
@@ -16,10 +15,9 @@ int main() {
 
   model.Train();
 
-  float accuracy =
-      model.GetAccuracy("../data/datasets/testimagesandlabels.txt");
+  std::cout << model.GetAccuracy("../data/datasets/testimagesandlabels.txt");
 
-  std::cout << accuracy;
+  model.PrintConfusionMatrix();
 
   return 0;
 }

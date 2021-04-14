@@ -135,6 +135,8 @@ public:
   Trainer *GetTrainer() const;
 
   std::map<char, std::vector<Image *>> GetTrainingImageMap() const;
+  
+  void PrintConfusionMatrix() const;
 
 private:
   /**
@@ -155,6 +157,7 @@ private:
   std::map<char, std::vector<Image *>> label_image_map_;
   Trainer *model_trainer_;
   size_t total_num_images_;
+  std::map<char, std::map<bool, float>> confusion_matrix_;
 };
 
 } // namespace naivebayes

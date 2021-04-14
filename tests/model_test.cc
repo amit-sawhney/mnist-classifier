@@ -2,7 +2,6 @@
 
 #include <core/model.h>
 #include <fstream>
-#include <iostream>
 
 using naivebayes::Model;
 
@@ -99,13 +98,10 @@ TEST_CASE("Model copy assignment operator", "[constructor][copy][operator]") {
     std::ifstream saved_model1(kTestTrainingSet);
 
     Model model;
-
     saved_model1 >> copy_model;
-
     std::ifstream saved_model2(kTestTrainingSet);
 
     saved_model2 >> model;
-
     model = copy_model;
 
     model.Train();
