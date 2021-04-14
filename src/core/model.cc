@@ -167,6 +167,7 @@ void Model::Load(const std::string &model_file_path) {
 
   std::ifstream saved_stream(model_file_path);
   model_trainer_ = new Trainer();
+  // Overloaded operator to train to load modle
   saved_stream >> *model_trainer_;
 
   std::cout << "Finished Loading........." << std::endl;

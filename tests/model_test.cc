@@ -304,3 +304,150 @@ TEST_CASE("Saving and loading model", "[save][trainer][ostream]") {
             model.GetTrainer()->GetFeatures()[0][0][0].at('0'));
   }
 }
+
+TEST_CASE("Model prediction works", "[prediction]") {
+
+  std::ifstream training_data(
+      "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-amit-"
+      "sawhney\\data\\datasets\\trainingimagesandlabels.txt");
+
+  Model classify_model;
+  training_data >> classify_model;
+
+  classify_model.Train();
+
+  SECTION("Check likelihood value calculations") {
+    std::ifstream training_data_test(kTestTrainingSet);
+
+    Model value_model;
+    training_data_test >> value_model;
+
+    value_model.Train();
+
+    std::vector<std::string> ascii_zero{"#+#", "# #", "#+#"};
+    naivebayes::Image image(ascii_zero, '0');
+
+    float zero_likelihood = value_model.CalculateLikelihood('0', image);
+    float one_likelihood = value_model.CalculateLikelihood('1', image);
+
+    REQUIRE(zero_likelihood == Approx(-8.01434f));
+    REQUIRE(zero_likelihood > one_likelihood);
+    REQUIRE(one_likelihood == Approx(-16.63221f));
+  }
+
+  SECTION("0 classification") {
+    std::ifstream zero_file(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+        "amit-sawhney\\data\\numbers\\zero.txt");
+
+    naivebayes::Image zero;
+    zero_file >> zero;
+
+    REQUIRE(classify_model.Predict(zero.GetPixels()) == '0');
+  }
+
+  SECTION("1 classification") {
+    std::ifstream one_file("C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+                           "amit-sawhney\\data\\numbers\\one.txt");
+
+    naivebayes::Image one;
+    one_file >> one;
+
+    REQUIRE(classify_model.Predict(one.GetPixels()) == '1');
+  }
+
+  SECTION("2 classification") {
+    std::ifstream two_file("C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+                           "amit-sawhney\\data\\numbers\\two.txt");
+
+    naivebayes::Image two;
+    two_file >> two;
+
+    REQUIRE(classify_model.Predict(two.GetPixels()) == '2');
+  }
+
+  SECTION("3 classification") {
+    std::ifstream three_file(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+        "amit-sawhney\\data\\numbers\\three.txt");
+
+    naivebayes::Image three;
+    three_file >> three;
+
+    REQUIRE(classify_model.Predict(three.GetPixels()) == '3');
+  }
+
+  SECTION("4 classification") {
+    std::ifstream four_file(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+        "amit-sawhney\\data\\numbers\\four.txt");
+
+    naivebayes::Image four;
+    four_file >> four;
+
+    REQUIRE(classify_model.Predict(four.GetPixels()) == '4');
+  }
+
+  SECTION("5 classification") {
+    std::ifstream five_file(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+        "amit-sawhney\\data\\numbers\\five.txt");
+
+    naivebayes::Image five;
+    five_file >> five;
+
+    REQUIRE(classify_model.Predict(five.GetPixels()) == '5');
+  }
+
+  SECTION("6 classification") {
+    std::ifstream six_file("C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+                           "amit-sawhney\\data\\numbers\\six.txt");
+
+    naivebayes::Image six;
+    six_file >> six;
+
+    REQUIRE(classify_model.Predict(six.GetPixels()) == '6');
+  }
+
+  SECTION("7 classification") {
+    std::ifstream seven_file(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+        "amit-sawhney\\data\\numbers\\seven.txt");
+
+    naivebayes::Image seven;
+    seven_file >> seven;
+
+    REQUIRE(classify_model.Predict(seven.GetPixels()) == '7');
+  }
+
+  SECTION("8 classification") {
+    std::ifstream eight_file(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+        "amit-sawhney\\data\\numbers\\eight.txt");
+
+    naivebayes::Image eight;
+    eight_file >> eight;
+
+    REQUIRE(classify_model.Predict(eight.GetPixels()) == '8');
+  }
+
+  SECTION("9 classification") {
+    std::ifstream nine_file(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-"
+        "amit-sawhney\\data\\numbers\\nine.txt");
+
+    naivebayes::Image nine;
+    nine_file >> nine;
+
+    REQUIRE(classify_model.Predict(nine.GetPixels()) == '9');
+  }
+
+  SECTION("Model accuracy is above 70%") {
+
+    float accuracy = classify_model.GetAccuracy(
+        "C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-amit-"
+        "sawhney\\data\\datasets\\testimagesandlabels.txt");
+
+    REQUIRE(accuracy > 0.7f);
+  }
+}

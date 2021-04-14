@@ -62,7 +62,7 @@ public:
    * @param pixels the status of each of the pixels in the Training Image
    */
   Image(size_t image_size, char image_label,
-                const std::vector<std::vector<Pixel>> &pixels);
+        const std::vector<std::vector<Pixel>> &pixels);
 
   /**
    * Instantiates a Training Image by parsing the necessary information from a
@@ -71,8 +71,16 @@ public:
    * @param raw_ascii_image the string representation of the Training Image
    * @param image_label the label the Training Image represents
    */
-  Image(const std::vector<std::string> &raw_ascii_image,
-                char image_label);
+  Image(const std::vector<std::string> &raw_ascii_image, char image_label);
+
+  /**
+   * Overloaded operator to load in a single image through a file
+   *
+   * @param input the input stream to get the image from
+   * @param image the image class to load the file into
+   * @return the input stream
+   */
+  friend std::istream &operator>>(std::istream &input, Image &image);
 
   /**
    * Gets the Pixel status at a specific row and column number of the Training

@@ -82,6 +82,24 @@ Image::Image(const std::vector<std::string> &raw_ascii_image, char image_label)
   }
 }
 
+std::istream &operator>>(std::istream &input, Image &image) {
+
+  std::string current_line;
+  std::vector<std::string> ascii;
+
+  std::getline(input, current_line);
+
+  char label = current_line[0];
+
+  while (std::getline(input, current_line)) {
+    ascii.push_back(current_line);
+  }
+
+  image = Image(ascii, label);
+  
+  return input;
+}
+
 Pixel Image::GetPixelStatusByLocation(size_t row, size_t col) const {
   return pixels_.at(row).at(col);
 }

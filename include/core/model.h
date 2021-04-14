@@ -61,9 +61,21 @@ public:
    * instantiated
    */
   void Train();
-  
+
+  /**
+   * Predicts the classification for an ascii image
+   *
+   * @param ascii_image the string ascii image representation
+   * @return the classification of the image
+   */
   char Predict(const std::vector<std::string> &ascii_image);
 
+  /**
+   * Predicts the classification for an ascii image
+   *
+   * @param pixel_grid the pixel based representation of an image
+   * @return the classification of the image
+   */
   char Predict(const std::vector<std::vector<Pixel>> &pixel_grid);
 
   /**
@@ -91,13 +103,36 @@ public:
    */
   friend std::istream &operator>>(std::istream &input, Model &model);
 
+  /**
+   * Adds a training image to the model
+   *
+   * @param ascii_image the ascii representation of the image
+   * @param label the label the image corresponds to
+   */
+  void AddImage(const std::vector<std::string> &ascii_image, char label);
+
+  /**
+   * Determines the Accuracy for a model for a passed in testing dataset
+   * filepath
+   *
+   * @param testing_file_path the dataset of testing images
+   * @return the accuracy of the model
+   */
+  float GetAccuracy(const std::string &testing_file_path);
+
+  /**
+   * Calculates the Likelihood value for a singular image corresponding to a
+   * specified label
+   *
+   * @param label the classification to determine the likelihood to
+   * @param image the image to calculate the likelihood for
+   * @return the value of the calculated likelihood
+   */
+  float CalculateLikelihood(char label, const Image &image) const;
+
   Trainer *GetTrainer() const;
 
   std::map<char, std::vector<Image *>> GetTrainingImageMap() const;
-
-  void AddImage(const std::vector<std::string> &ascii_image, char label);
-
-  float GetAccuracy(const std::string &testing_file_path);
 
 private:
   /**
@@ -107,8 +142,6 @@ private:
    * @param label the label to update the map with
    */
   void UpdateTrainingImageMap(char label);
-
-  float CalculateLikelihood(char label, const Image &image) const;
 
   /**
    * Deletes and clears the data from the current Model object
