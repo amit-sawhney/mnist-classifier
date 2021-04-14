@@ -6,7 +6,7 @@ namespace visualizer {
 
 NaiveBayesApp::NaiveBayesApp()
     : sketchpad_(glm::vec2(kMargin, kMargin), kImageDimension,
-                 kWindowSize - 2 * kMargin, 2) {
+                 kWindowSize - 2 * kMargin) {
   ci::app::setWindowSize((int)kWindowSize, (int)kWindowSize);
 
   model_ = Model();

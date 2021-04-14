@@ -1,5 +1,4 @@
-/data/trainingimagesandlabels.txt
-/data/testimagesandlabels.txt
+/data/datasets/
 /saved/
 /cmake-build-debug/
 /.idea/
