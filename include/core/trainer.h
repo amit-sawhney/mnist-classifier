@@ -107,15 +107,43 @@ private:
   FeatureVector BuildStructure(size_t image_size, size_t num_shades,
                                const std::vector<char> &all_labels);
 
+  /**
+   * Parses and reads a serialized model's file labels into
+   *
+   * @param input the input stream where the data comes in
+   * @param num_labels the number of labels that the input will contain
+   * @return the character labels for the model
+   */
   std::vector<char> GetFileLabels(std::istream &input, size_t num_labels);
 
+  /**
+   * Parses and reads the next line of an input to a size_t
+   *
+   * @param input the input stream with the next number
+   * @return the parsed number
+   */
   size_t GetNextSizeT(std::istream &input);
 
+  /**
+   * Parses and reads the prior probabilities from an input file into a map
+   *
+   * @param input the input stream with the probabilities
+   * @param labels the character labels of the model
+   * @return a mapping between a character label and the prior probability
+   */
   std::map<char, float> GetFilePriors(std::istream &input,
-                                      std::vector<char> labels);
+                                      const std::vector<char>& labels);
 
-  void ValidateInputSize(size_t size, size_t num_shades,
-                         size_t num_labels, size_t num_features) const;
+  /**
+   * Validates the input stream's model input
+   *
+   * @param size the image size of the model
+   * @param num_shades the number of shades the model used
+   * @param num_labels the number of labels in the model
+   * @param num_features the number of features in the model
+   */
+  void ValidateInputSize(size_t size, size_t num_shades, size_t num_labels,
+                         size_t num_features) const;
 
   FeatureVector features_;
   std::map<char, float> priors_;
