@@ -41,14 +41,16 @@ void NaiveBayesApp::mouseDrag(ci::app::MouseEvent event) {
 
 void NaiveBayesApp::keyDown(ci::app::KeyEvent event) {
   switch (event.getCode()) {
-  case ci::app::KeyEvent::KEY_RETURN: {
-    std::vector<std::vector<Pixel>> pixels = sketchpad_.GetPixelGrid();
-    current_prediction_ = model_.Predict(pixels) - '0';
-    break;
+    case ci::app::KeyEvent::KEY_RETURN: {
+      std::vector<std::vector<Pixel>> pixels = sketchpad_.GetPixelGrid();
+    
+      // Convert char prediction and convert to numeric type
+      current_prediction_ = model_.Predict(pixels) - '0';
+      break;
   }
-  case ci::app::KeyEvent::KEY_DELETE:
-    sketchpad_.Clear();
-    break;
+    case ci::app::KeyEvent::KEY_DELETE:
+      sketchpad_.Clear();
+      break;
   }
 }
 

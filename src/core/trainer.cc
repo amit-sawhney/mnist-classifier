@@ -63,7 +63,7 @@ void Trainer::ValidateInputSize(size_t size, size_t num_shades,
 }
 
 std::map<char, float> Trainer::GetFilePriors(std::istream &input,
-                                             std::vector<char> labels) {
+                                             const std::vector<char> &labels) {
   std::string current_line;
 
   std::map<char, float> priors;
