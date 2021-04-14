@@ -61,8 +61,7 @@ public:
    * instantiated
    */
   void Train();
-
-  // TODO: This will be implemented in week 2
+  
   char Predict(const std::vector<std::string> &ascii_image);
 
   char Predict(const std::vector<std::vector<Pixel>> &pixel_grid);
