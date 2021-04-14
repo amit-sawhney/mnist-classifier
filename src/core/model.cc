@@ -173,34 +173,6 @@ void Model::Load(const std::string &model_file_path) {
   std::cout << "Finished Loading........." << std::endl;
 }
 
-void Model::Save(const std::string &save_file_path,
-                 const std::string &file_name) {
-
-  std::cout << "Saving the model........" << std::endl;
-  std::string full_path = save_file_path + file_name;
-
-  // Access the first training image's size
-  size_t image_size = label_image_map_.begin()->second.at(0)->GetSize();
-  size_t num_shades = size_t(Pixel::kNumShades);
-  std::vector<char> labels = GetLabels();
-
-  std::ofstream os(full_path);
-
-  // Save basic model information at top of file
-  os << image_size << std::endl;
-  os << num_shades << std::endl;
-  os << label_image_map_.size() << std::endl;
-
-  for (char label : labels) {
-    os << label << std::endl;
-  }
-
-  os << std::endl;
-  os << *model_trainer_;
-  os.close();
-  std::cout << "Finished Saving........." << std::endl;
-}
-
 std::istream &operator>>(std::istream &input, Model &model) {
   std::string current_line;
   std::vector<std::string> ascii_image;
@@ -227,6 +199,30 @@ std::istream &operator>>(std::istream &input, Model &model) {
   model.model_trainer_ = nullptr;
 
   return input;
+}
+
+std::ostream &operator<<(std::ostream &os, const Model &trainer) {
+  std::cout << "Saving the model........" << std::endl;
+
+  // Access the first training image's size
+  size_t image_size = trainer.label_image_map_.begin()->second.at(0)->GetSize();
+  size_t num_shades = size_t(Pixel::kNumShades);
+  std::vector<char> labels = trainer.GetLabels();
+
+  // Save basic model information at top of file
+  os << image_size << std::endl;
+  os << num_shades << std::endl;
+  os << trainer.label_image_map_.size() << std::endl;
+
+  for (char label : labels) {
+    os << label << std::endl;
+  }
+
+  os << std::endl;
+  os << *trainer.model_trainer_;
+  std::cout << "Finished Saving........." << std::endl;
+
+  return os;
 }
 
 void Model::AddImage(const std::vector<std::string> &ascii_image, char label) {

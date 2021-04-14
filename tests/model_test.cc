@@ -292,7 +292,10 @@ TEST_CASE("Saving and loading model", "[save][trainer][ostream]") {
     input_file >> model;
     model.Train();
 
-    model.Save(kTestSaved, "testing_saved.txt");
+    std::ofstream os("C:\\Users\\asawh\\Cinder\\my-projects\\naive-bayes-amit-"
+                     "sawhney\\saved\\testing_saved.txt");
+
+    os << model;
 
     Model saved_model;
 

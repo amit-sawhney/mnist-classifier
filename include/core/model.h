@@ -79,14 +79,6 @@ public:
   char Predict(const std::vector<std::vector<Pixel>> &pixel_grid);
 
   /**
-   * Serializes the Model into a file at the specified location
-   *
-   * @param save_file_path the location to save the
-   * @param file_name the name of the saved file
-   */
-  void Save(const std::string &save_file_path, const std::string &file_name);
-
-  /**
    * Deserializes a file back into a Model object
    *
    * @param model_file_path
@@ -102,6 +94,16 @@ public:
    * @return the input stream
    */
   friend std::istream &operator>>(std::istream &input, Model &model);
+
+  /**
+   * Overrides ostream for Trainer to write a custom serialization to
+   * an output stream
+   *
+   * @param output the output stream to write to
+   * @param trainer the Trainer to output to the stream
+   * @return the output stream
+   */
+  friend std::ostream &operator<<(std::ostream &output, const Model &trainer);
 
   /**
    * Adds a training image to the model
